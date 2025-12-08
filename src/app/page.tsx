@@ -8,7 +8,7 @@ export default function Home() {
     <div>
       <div className="max-w-2xl mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
-          Bienvenue sur The Word of Maz.
+          Bienvenue sur The Word of Maz
         </h1>
         <p className="text-lg text-muted-foreground">
           Je poste (presque) tous les jours
