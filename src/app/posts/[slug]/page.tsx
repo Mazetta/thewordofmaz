@@ -129,7 +129,7 @@ export default async function PostPage({ params }: PostPageProps) {
             <time>{format(new Date(post.date), "dd MMMM yyyy", { locale: fr })}</time>
             {post.author && <span>Par {post.author}</span>}
             <span>{calculateReadingTime(wordCount)}</span>
-            <span>{wordCount} mots</span>
+            if (wordCount===1) {<span>{wordCount} mot</span>} else {<span>{wordCount} mots</span>}
           </div>
 
           <h1 className="text-4xl font-bold mb-4 text-foreground">
