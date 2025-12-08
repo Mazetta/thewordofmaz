@@ -17,7 +17,7 @@ export default function Layout({ children }: LayoutProps) {
                 href="/"
                 className="flex items-center text-xl font-bold text-foreground"
               >
-                The Word of Maz
+                🍄 The Word of Maz
               </Link>
             </div>
             <div className="flex items-center">
