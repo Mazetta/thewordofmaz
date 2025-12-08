@@ -8,7 +8,8 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-background">
+    // Ajout de flex + flex-col pour permettre au footer de se placer en bas
+    <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
@@ -27,11 +28,14 @@ export default function Layout({ children }: LayoutProps) {
         </nav>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Ajout de flex-1 pour pousser le footer vers le bas */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1">
         {children}
       </main>
 
-      <footer className="bg-muted border-t fixed bottom-0 w-full">
+      {/* Retrait du fixed bottom-0 w-full
+          Ajout de mt-auto pour coller au bas de page */}
+      <footer className="bg-muted border-t mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <p className="text-center text-muted-foreground">
             © {new Date().getFullYear()} Mazeriio. Tous droits réservés.
