@@ -71,7 +71,7 @@ export default function PostCard({ post }: PostCardProps) {
       </CardHeader>
       <CardContent>
         {post.author && (
-          <p className="text-sm text-muted-foreground">By {post.author}</p>
+          <p className="text-sm text-muted-foreground">Par {post.author}</p>
         )}
       </CardContent>
       {post.tags && post.tags.length > 0 && (
