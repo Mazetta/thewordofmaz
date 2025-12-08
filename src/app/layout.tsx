@@ -11,30 +11,30 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://your-site.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Gesturs - The Notion Blog",
-    template: `%s | Gesturs`,
+    default: "The Word of Maz",
+    template: `%s | The Word of Maz`,
   },
-  description: "A blog built with Next.js and Notion",
+  description: "Tout savoir sur moi, mes projets et ma vie.",
   openGraph: {
-    title: "Gesturs - The Notion Blog",
-    description: "A blog built with Next.js and Notion",
+    title: "The Word of Maz",
+    description: "Tout savoir sur moi, mes projets et ma vie.",
     url: siteUrl,
-    siteName: "Gesturs",
+    siteName: "The Word of Maz",
     images: [
       {
         url: `${siteUrl}/opengraph-image.png`,
         width: 1200,
         height: 630,
-        alt: "Gesturs - The Notion Blog",
+        alt: "The Word of Maz",
       },
     ],
-    locale: "en_US",
+    locale: "fr_FR",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gesturs - The Notion Blog",
-    description: "A blog built with Next.js and Notion",
+    title: "The Word of Maz",
+    description: "Tout savoir sur moi, mes projets et ma vie.",
     images: [`${siteUrl}/opengraph-image.png`],
   },
   robots: {
@@ -69,7 +69,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider
           attribute="class"
