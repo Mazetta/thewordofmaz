@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 import { Post, getWordCount } from "@/lib/notion";
 import { Badge } from "@/components/ui/badge";
 import { calculateReadingTime } from "@/lib/utils";
@@ -53,7 +54,7 @@ export default function PostCard({ post }: PostCardProps) {
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <Calendar className="h-4 w-4" />
-            <span>{format(new Date(post.date), "MMM d, yyyy")}</span>
+            <span>{format(new Date(post.date), "dd MMM yyyy", { locale: fr })}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4" />
