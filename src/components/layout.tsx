@@ -31,7 +31,7 @@ export default function Layout({ children }: LayoutProps) {
         {children}
       </main>
 
-      <footer className="bg-muted border-t fixed">
+      <footer className="bg-muted border-t fixed bottom-0 left-0 z-20 w-full p-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <p className="text-center text-muted-foreground">
             © {new Date().getFullYear()} Mazeriio. Tous droits réservés.
