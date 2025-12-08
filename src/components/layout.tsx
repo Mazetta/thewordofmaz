@@ -9,7 +9,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   return (
     // Ajout de flex + flex-col pour permettre au footer de se placer en bas
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background">
       <header className="border-b">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
@@ -29,7 +29,7 @@ export default function Layout({ children }: LayoutProps) {
       </header>
 
       {/* Ajout de flex-1 pour pousser le footer vers le bas */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {children}
       </main>
 
@@ -45,3 +45,4 @@ export default function Layout({ children }: LayoutProps) {
     </div>
   );
 }
+
