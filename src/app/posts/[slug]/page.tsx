@@ -16,17 +16,17 @@ interface PostPageProps {
   params: Promise<{ slug: string }>;
 }
 
-// 🔹 Génération des slugs statiques pour toutes les pages publiées
+// 🔹 Génération des pages statiques avec l'ID Notion comme "slug"
 export async function generateStaticParams() {
-  const rawPosts = await fetchPublishedPosts(); // récupère toutes les pages publiées
+  const rawPosts = await fetchPublishedPosts(); // toutes les pages publiées
   const postsWithNulls = await Promise.all(
     rawPosts.map((p) => getPostFromNotion(p.id))
   );
   const posts: Post[] = postsWithNulls.filter((p): p is Post => p !== null);
 
-  // 🔹 On crée un slug "lisible" à partir du titre
+  // 🔹 On renvoie l'ID Notion pour chaque page
   return posts.map((post) => ({
-    slug: post.slug, // assure-toi que post.slug est déjà un slug URL-friendly
+    slug: post.id, // ID Notion utilisé comme paramètre URL
   }));
 }
 
@@ -36,7 +36,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPostFromNotion(slug); // 🔹 récupération par slug
+  const post = await getPostFromNotion(slug); // 🔹 slug = ID Notion
 
   if (!post) {
     return { title: "Erreur 404, Post Introuvable" };
@@ -47,12 +47,12 @@ export async function generateMetadata(
   return {
     title: post.title,
     description: post.description,
-    alternates: { canonical: `${siteUrl}/posts/${post.slug}` },
+    alternates: { canonical: `${siteUrl}/posts/${post.id}` },
     openGraph: {
       title: post.title,
       description: post.description,
       type: "article",
-      url: `${siteUrl}/posts/${post.slug}`,
+      url: `${siteUrl}/posts/${post.id}`,
       publishedTime: new Date(post.date).toISOString(),
       authors: post.author ? [post.author] : [],
       tags: post.tags,
@@ -70,13 +70,10 @@ export async function generateMetadata(
 // 🔹 Page principale
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
+  const post = await getPostFromNotion(slug); // 🔹 récupère le post par ID
 
-  // 🔹 Récupération du post depuis Notion par slug
-  const post = await getPostFromNotion(slug);
-
-  // 🔹 Si le post n'existe pas, renvoie 404
   if (!post) {
-    notFound();
+    notFound(); // 🔹 renvoie 404 si le post n'existe pas
   }
 
   const wordCount = post.content ? getWordCount(post.content) : 0;
@@ -91,7 +88,7 @@ export default async function PostPage({ params }: PostPageProps) {
     datePublished: new Date(post.date).toISOString(),
     author: { "@type": "Person", name: post.author || "Guest Author" },
     publisher: { "@type": "Organization", name: "Your Site Name", logo: { "@type": "ImageObject", url: `${siteUrl}/logo.png` } },
-    mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/posts/${post.slug}` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/posts/${post.id}` },
   };
 
   return (
@@ -132,4 +129,3 @@ export default async function PostPage({ params }: PostPageProps) {
 
 // 🔥 ISR : régénère toutes les 60 secondes
 export const revalidate = 60;
-// 
