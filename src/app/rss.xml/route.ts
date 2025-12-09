@@ -10,10 +10,10 @@ export async function GET() {
     .map((post) => `
       <item>
         <title>${post.title}</title>
-        <link>${siteUrl}/posts/${post.slug}</link>
+        <link>${siteUrl}posts/${post.slug}</link>
         <description>${post.description}</description>
         <pubDate>${new Date(post.date).toUTCString()}</pubDate>
-        <guid>${siteUrl}/posts/${post.slug}</guid>
+        <guid>${siteUrl}posts/${post.slug}</guid>
       </item>
     `)
     .join("");
