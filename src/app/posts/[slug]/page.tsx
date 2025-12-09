@@ -162,3 +162,5 @@ export default async function PostPage({ params }: PostPageProps) {
     </>
   );
 }
+
+export const revalidate = 60;
