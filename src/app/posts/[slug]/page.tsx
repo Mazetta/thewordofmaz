@@ -1,4 +1,4 @@
-import { getPostsFromCache, getWordCount } from "@/lib/notion";
+import { getPostFromNotion, getWordCount } from "@/lib/notion";
 import { format } from "date-fns";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -11,6 +11,7 @@ import { components } from "@/components/mdx-component";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { fr } from "date-fns/locale";
+
 interface PostPageProps {
   params: Promise<{ slug: string }>;
 }
@@ -20,8 +21,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { slug } = await params;
-  const posts = getPostsFromCache();
-  const post = posts.find((p) => p.slug === slug);
+  const post = await getPostFromNotion(slug);
 
   if (!post) {
     return {
@@ -70,8 +70,7 @@ export async function generateMetadata(
 
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
-  const posts = getPostsFromCache();
-  const post = posts.find((p) => p.slug === slug);
+  const post = await getPostFromNotion(slug);
   const wordCount = post?.content ? getWordCount(post.content) : 0;
 
   if (!post) {
@@ -163,4 +162,5 @@ export default async function PostPage({ params }: PostPageProps) {
   );
 }
 
+// 🔥 ISR : régénère toutes les 60 secondes
 export const revalidate = 60;
