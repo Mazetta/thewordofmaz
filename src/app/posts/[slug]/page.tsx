@@ -11,7 +11,8 @@ import { components } from "@/components/mdx-component";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { fr } from "date-fns/locale";
-import Giscus from "@giscus/react";
+
+import GiscusComments from "@/components/giscus-comments";
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
@@ -159,7 +160,7 @@ export default async function PostPage({ params }: PostPageProps) {
           </div>
         </header>
 
-        <div className="max-w-none">
+        <div className="max-w-none mb-16">
           <ReactMarkdown
             components={components}
             remarkPlugins={[remarkGfm]}
@@ -168,24 +169,10 @@ export default async function PostPage({ params }: PostPageProps) {
             {post.content}
           </ReactMarkdown>
         </div>
+
+        <GiscusComments/>
+
       </article>
-
-      <script src="https://giscus.app/client.js"
-        data-repo="Mazetta/thewordofmaz"
-        data-repo-id="R_kgDOQk7bdw"
-        data-category="Giscus"
-        data-category-id="DIC_kwDOQk7bd84CzlyU"
-        data-mapping="og:title"
-        data-strict="1"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="top"
-        data-theme="preferred_color_scheme"
-        data-lang="fr"
-        data-loading="lazy"
-        async>
-      </script>
-
     </>
   );
 }
