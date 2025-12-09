@@ -170,21 +170,6 @@ export default async function PostPage({ params }: PostPageProps) {
         </div>
       </article>
 
-      <Giscus
-        repo="Mazetta/thewordofmaz"
-        repoId="R_kgDOQk7bdw"
-        category="Giscus"
-        categoryId="DIC_kwDOQk7bd84CzlyU"
-        mapping="og:title"
-        reactionsEnabled="1"
-        strict="1"
-        emitMetadata="0"
-        inputPosition="top"
-        theme="preferred_color_scheme"
-        data-loading="lazy"
-        lang="fr"
-      />
-
     </>
   );
 }
