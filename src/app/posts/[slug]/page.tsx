@@ -1,4 +1,4 @@
-import { getPostFromNotion, getWordCount, fetchPublishedPosts, Post } from "@/lib/notion"; // 🔹 ajout de fetchPublishedPosts et Post
+import { getPostFromNotion, getWordCount, fetchPublishedPosts, Post } from "@/lib/notion";
 import { format } from "date-fns";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -16,21 +16,17 @@ interface PostPageProps {
   params: Promise<{ slug: string }>;
 }
 
-// 🔹 Ajout de generateStaticParams pour que Next.js connaisse tous les slugs et évite le 404
+// 🔹 Génération des slugs statiques pour toutes les pages publiées
 export async function generateStaticParams() {
   const rawPosts = await fetchPublishedPosts(); // récupère toutes les pages publiées
-
-  // 🔹 On récupère tous les posts, certains peuvent être null
   const postsWithNulls = await Promise.all(
     rawPosts.map((p) => getPostFromNotion(p.id))
   );
-
-  // 🔹 On filtre les valeurs null pour obtenir un tableau Post[]
   const posts: Post[] = postsWithNulls.filter((p): p is Post => p !== null);
 
-  // 🔹 On retourne les slugs pour la génération des pages
+  // 🔹 On crée un slug "lisible" à partir du titre
   return posts.map((post) => ({
-    slug: post.slug,
+    slug: post.slug, // assure-toi que post.slug est déjà un slug URL-friendly
   }));
 }
 
@@ -40,7 +36,7 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const { slug } = await params;
-  const post = await getPostFromNotion(slug);
+  const post = await getPostFromNotion(slug); // 🔹 récupération par slug
 
   if (!post) {
     return { title: "Erreur 404, Post Introuvable" };
@@ -74,10 +70,13 @@ export async function generateMetadata(
 // 🔹 Page principale
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
-  const post = await getPostFromNotion(slug); // 🔹 fetch direct depuis Notion
 
+  // 🔹 Récupération du post depuis Notion par slug
+  const post = await getPostFromNotion(slug);
+
+  // 🔹 Si le post n'existe pas, renvoie 404
   if (!post) {
-    notFound(); // 🔹 garde la 404 si le post n'existe pas
+    notFound();
   }
 
   const wordCount = post.content ? getWordCount(post.content) : 0;
@@ -133,3 +132,4 @@ export default async function PostPage({ params }: PostPageProps) {
 
 // 🔥 ISR : régénère toutes les 60 secondes
 export const revalidate = 60;
+// 
