@@ -47,7 +47,7 @@ export async function generateMetadata(
       tags: post.tags,
       images: [
         {
-          url: post.coverImage || `${siteUrl}/mazeriio-logo.png`,
+          url: post.coverImage || `${siteUrl}/mushroom-128.png`,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -60,7 +60,7 @@ export async function generateMetadata(
       description: post.description,
       images: [
         {
-          url: post.coverImage || `${siteUrl}/mazeriio-logo.png`,
+          url: post.coverImage || `${siteUrl}/mushroom-128.png`,
           alt: post.title,
         },
       ],
@@ -85,7 +85,7 @@ export default async function PostPage({ params }: PostPageProps) {
     "@type": "BlogPosting",
     headline: post.title,
     description: post.description,
-    image: post.coverImage || `${siteUrl}/mazeriio-logo.png`,
+    image: post.coverImage || `${siteUrl}/mushroom-128.png`,
     datePublished: new Date(post.date).toISOString(),
     author: {
       "@type": "Person",
