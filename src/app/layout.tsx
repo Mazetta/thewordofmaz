@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     siteName: "The Word of Maz",
     images: [
       {
-        url: `${siteUrl}/opengraph-image.png`,
+        url: `${siteUrl}/mazeriio-logo.png`,
         width: 1200,
         height: 630,
         alt: "The Word of Maz",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "The Word of Maz",
     description: "Tout savoir sur moi, mes projets et ma vie.",
-    images: [`${siteUrl}/opengraph-image.png`],
+    images: [`${siteUrl}/mazeriio-logo.png`],
   },
   robots: {
     index: true,
