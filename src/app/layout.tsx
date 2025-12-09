@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "The Word of Maz",
     description: "Tout savoir sur moi, mes projets et ma vie.",
     url: siteUrl,
-    siteName: "The Word of Maz",
+    siteName: "mazeriio.net",
     images: [
       {
         url: `${siteUrl}/mushroom-128.png`,
