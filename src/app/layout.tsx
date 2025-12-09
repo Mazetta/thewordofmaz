@@ -10,6 +10,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.mazeriio.net/";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  themeColor: "#f83700",
   title: {
     default: "The Word of Maz",
     template: `%s | The Word of Maz`,
