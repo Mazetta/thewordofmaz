@@ -11,6 +11,7 @@ import { components } from "@/components/mdx-component";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { fr } from "date-fns/locale";
+import Giscus from "@giscus/react";
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
@@ -168,6 +169,22 @@ export default async function PostPage({ params }: PostPageProps) {
           </ReactMarkdown>
         </div>
       </article>
+
+      <Giscus
+        repo="Mazetta/thewordofmaz"
+        repoId="R_kgDOQk7bdw"
+        category="Giscus"
+        categoryId="DIC_kwDOQk7bd84CzlyU"
+        mapping="og:title"
+        reactionsEnabled="1"
+        strict="1"
+        emitMetadata="0"
+        inputPosition="top"
+        theme="preferred_color_scheme"
+        data-loading="lazy"
+        lang="fr"
+      />
+
     </>
   );
 }
