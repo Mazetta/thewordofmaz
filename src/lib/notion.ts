@@ -122,3 +122,35 @@ export async function getPostFromNotion(pageId: string): Promise<Post | null> {
     return null;
   }
 }
+
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  try {
+    const rawPosts = await fetchPublishedPosts();
+    for (const page of rawPosts) {
+      const post = await getPostFromNotion(page.id);
+      if (post?.slug === slug) {
+        return post;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error("Error getting post by slug:", error);
+    return null;
+  }
+}
+
+export async function getAllPosts(): Promise<Post[]> {
+  try {
+    const rawPosts = await fetchPublishedPosts();
+    const posts = await Promise.all(
+      rawPosts.map(async (page) => {
+        const post = await getPostFromNotion(page.id);
+        return post;
+      })
+    );
+    return posts.filter((p) => p !== null) as Post[];
+  } catch (error) {
+    console.error("Error getting all posts:", error);
+    return [];
+  }
+}

@@ -1,18 +1,8 @@
-import { fetchPublishedPosts, getPostFromNotion, Post } from "@/lib/notion";
+import { getAllPosts } from "@/lib/notion";
 import PostCard from "@/components/post-card";
 
 export default async function Home() {
-  // 🔥 Fetch direct depuis Notion
-  const rawPosts = await fetchPublishedPosts();
-
-  // 🔥 Map chaque PageObjectResponse vers ton type Post
-  const posts: Post[] = await Promise.all(
-    rawPosts.map(async (page) => {
-      const post = await getPostFromNotion(page.id);
-      if (!post) throw new Error(`Post Notion invalide pour id ${page.id}`);
-      return post;
-    })
-  );
+  const posts = await getAllPosts();
 
   return (
     <div>

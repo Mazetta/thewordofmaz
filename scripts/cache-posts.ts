@@ -4,6 +4,12 @@ import path from 'path';
 
 async function cachePosts() {
   try {
+    if (!process.env.NOTION_TOKEN) {
+      console.warn('⚠️  NOTION_TOKEN not set. Skipping cache update.');
+      console.warn('Posts will be fetched dynamically at runtime.');
+      process.exit(0);
+    }
+
     console.log('Fetching posts from Notion...');
     const posts = await fetchPublishedPosts();
 
@@ -19,10 +25,11 @@ async function cachePosts() {
     const cachePath = path.join(process.cwd(), 'posts-cache.json');
     fs.writeFileSync(cachePath, JSON.stringify(allPosts, null, 2));
 
-    console.log(`Successfully cached ${allPosts.length} posts.`);
+    console.log(`✅ Successfully cached ${allPosts.length} posts.`);
   } catch (error) {
-    console.error('Error caching posts:', error);
-    process.exit(1);
+    console.error('❌ Error caching posts:', error);
+    console.warn('⚠️  Continuing build - posts will be fetched dynamically at runtime.');
+    process.exit(0);
   }
 }
 
