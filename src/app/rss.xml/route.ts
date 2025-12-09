@@ -21,9 +21,9 @@ export async function GET() {
   const rss = `<?xml version="1.0" encoding="UTF-8" ?>
     <rss version="2.0">
       <channel>
-        <title>Mon Blog</title>
+        <title>The Word of Maz</title>
         <link>${siteUrl}</link>
-        <description>Flux RSS du blog</description>
+        <description>Flux RSS du Word of Maz</description>
         ${rssItems}
       </channel>
     </rss>
