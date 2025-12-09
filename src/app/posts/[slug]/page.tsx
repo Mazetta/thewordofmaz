@@ -170,6 +170,22 @@ export default async function PostPage({ params }: PostPageProps) {
         </div>
       </article>
 
+      <script src="https://giscus.app/client.js"
+        data-repo="Mazetta/thewordofmaz"
+        data-repo-id="R_kgDOQk7bdw"
+        data-category="Giscus"
+        data-category-id="DIC_kwDOQk7bd84CzlyU"
+        data-mapping="og:title"
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="preferred_color_scheme"
+        data-lang="fr"
+        data-loading="lazy"
+        async>
+      </script>
+
     </>
   );
 }
