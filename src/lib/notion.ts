@@ -97,15 +97,23 @@ export async function getPostFromNotion(pageId: string): Promise<Post | null> {
       firstParagraph.slice(0, 160) + (firstParagraph.length > 160 ? "..." : "");
 
     const properties = page.properties as any;
+    const rawTitle = properties.Title.title[0]?.plain_text || "Untitled";
+
+    // Normalize and transliterate to preserve latin equivalents for accented chars
+    // Use NFKD to decompose characters, remove diacritic marks, and handle common ligatures
+    const slugified = rawTitle
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "") // remove diacritic combining marks
+      .replace(/œ/g, "oe")
+      .replace(/æ/g, "ae")
+      .replace(/[^a-z0-9]+/g, "-") // Replace any non-alphanumeric chars with dash
+      .replace(/^-+|-+$/g, ""); // Remove leading/trailing dashes
+
     const post: Post = {
       id: page.id,
-      title: properties.Title.title[0]?.plain_text || "Untitled",
-      slug:
-        properties.Title.title[0]?.plain_text
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-") // Replace any non-alphanumeric chars with dash
-          .replace(/^-+|-+$/g, "") || // Remove leading/trailing dashes
-        "untitled",
+      title: rawTitle,
+      slug: slugified || "untitled",
       coverImage: properties["Featured Image"]?.url || undefined,
       description,
       date:
