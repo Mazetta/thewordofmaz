@@ -23,8 +23,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: `${siteUrl}/mushroom-128.png`,
-        width: 1200,
-        height: 630,
+        width: 128,
+        height: 128,
         alt: "The Word of Maz",
       },
     ],
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     type: "website",
   },
   twitter: {
-    card: "summary_large_image",
+    card: "summary",
     title: "The Word of Maz",
     description: "Tout savoir sur moi, mes projets et ma vie.",
     images: [`${siteUrl}/mushroom-128.png`],
