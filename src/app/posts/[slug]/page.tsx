@@ -11,6 +11,7 @@ import { components } from "@/components/mdx-component";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { fr } from "date-fns/locale";
+import ShareSection from "@/components/ui/share-section";
 
 import GiscusComments from "@/components/giscus-comments";
 
@@ -159,6 +160,8 @@ export default async function PostPage({ params }: PostPageProps) {
               ))}
           </div>
         </header>
+
+        <ShareSection title={post.title} url={`${siteUrl}/posts/${post.slug}`} />
 
         <div className="max-w-none mb-16">
           <ReactMarkdown
