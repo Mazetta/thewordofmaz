@@ -19,7 +19,7 @@ import {
   EmailIcon,
 } from "react-share";
 
-import { Copy } from "lucide-react";
+import { Copy, Check } from "lucide-react";
 import { useState } from "react";
 
 interface ShareSectionProps {
@@ -27,7 +27,7 @@ interface ShareSectionProps {
   url: string;
 }
 
-// custom reddit button
+// reddit custom button
 function CustomRedditButton({ url, title }: { url: string; title: string }) {
   const shareReddit = () => {
     const redditUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(
@@ -37,7 +37,10 @@ function CustomRedditButton({ url, title }: { url: string; title: string }) {
   };
 
   return (
-    <button onClick={shareReddit} className="rounded-full">
+    <button
+      onClick={shareReddit}
+      className="rounded-full cursor-pointer"
+    >
       <RedditIcon size={24} round />
     </button>
   );
@@ -46,7 +49,7 @@ function CustomRedditButton({ url, title }: { url: string; title: string }) {
 export default function ShareSection({ title, url }: ShareSectionProps) {
   const [copied, setCopied] = useState(false);
 
-  // lazy fix for double slashes in url
+  // lazy fix
   const cleanUrl = url.replace(/([^:]\/)\/+/g, "$1");
 
   const copyToClipboard = async () => {
@@ -84,12 +87,19 @@ export default function ShareSection({ title, url }: ShareSectionProps) {
         <EmailIcon size={24} round />
       </EmailShareButton>
 
-      {/* 🔥 Copy bouton version 24px */}
+      {/* copy */}
       <button
         onClick={copyToClipboard}
-        className="rounded-full bg-white/10 hover:bg-white/20 transition p-1.5 flex items-center justify-center"
+        className="rounded-full bg-white/10 hover:bg-white/20 transition p-1.5 flex items-center justify-center cursor-pointer"
       >
-        <Copy className="w-4 h-4" />
+        {/* copy -> check */}
+        <div className="transition-opacity duration-200">
+          {copied ? (
+            <Check className="w-4 h-4 text-green-400" />
+          ) : (
+            <Copy className="w-4 h-4" />
+          )}
+        </div>
       </button>
 
     </div>
