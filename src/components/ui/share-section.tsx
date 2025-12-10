@@ -27,7 +27,7 @@ interface ShareSectionProps {
   url: string;
 }
 
-// 🔥 Reddit custom button (version icône round)
+// custom reddit button
 function CustomRedditButton({ url, title }: { url: string; title: string }) {
   const shareReddit = () => {
     const redditUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(
@@ -38,7 +38,7 @@ function CustomRedditButton({ url, title }: { url: string; title: string }) {
 
   return (
     <button onClick={shareReddit} className="rounded-full">
-      <RedditIcon size={32} round />
+      <RedditIcon size={24} round />
     </button>
   );
 }
@@ -46,8 +46,11 @@ function CustomRedditButton({ url, title }: { url: string; title: string }) {
 export default function ShareSection({ title, url }: ShareSectionProps) {
   const [copied, setCopied] = useState(false);
 
+  // lazy fix for double slashes in url
+  const cleanUrl = url.replace(/([^:]\/)\/+/g, "$1");
+
   const copyToClipboard = async () => {
-    await navigator.clipboard.writeText(url);
+    await navigator.clipboard.writeText(cleanUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -55,43 +58,36 @@ export default function ShareSection({ title, url }: ShareSectionProps) {
   return (
     <div className="flex items-center gap-3 my-6">
 
-      {/* X */}
-      <TwitterShareButton url={url} title={title}>
-        <XIcon size={32} round />
+      <TwitterShareButton url={cleanUrl} title={title}>
+        <XIcon size={24} round />
       </TwitterShareButton>
 
-      {/* Reddit custom */}
-      <CustomRedditButton url={url} title={title} />
+      <CustomRedditButton url={cleanUrl} title={title} />
 
-      {/* WhatsApp */}
-      <WhatsappShareButton url={url} title={title}>
-        <WhatsappIcon size={32} round />
+      <WhatsappShareButton url={cleanUrl} title={title}>
+        <WhatsappIcon size={24} round />
       </WhatsappShareButton>
 
-      {/* Facebook */}
-      <FacebookShareButton url={url} title={title}>
-        <FacebookIcon size={32} round />
+      <FacebookShareButton url={cleanUrl} title={title}>
+        <FacebookIcon size={24} round />
       </FacebookShareButton>
 
-      {/* Threads */}
-      <ThreadsShareButton url={url} title={title}>
-        <ThreadsIcon size={32} round />
+      <ThreadsShareButton url={cleanUrl} title={title}>
+        <ThreadsIcon size={24} round />
       </ThreadsShareButton>
 
-      {/* Bluesky */}
-      <BlueskyShareButton url={url} title={title}>
-        <BlueskyIcon size={32} round />
+      <BlueskyShareButton url={cleanUrl} title={title}>
+        <BlueskyIcon size={24} round />
       </BlueskyShareButton>
 
-      {/* Email */}
-      <EmailShareButton url={url} subject={title}>
-        <EmailIcon size={32} round />
+      <EmailShareButton url={cleanUrl} subject={title}>
+        <EmailIcon size={24} round />
       </EmailShareButton>
 
-      {/* Copy link */}
+      {/* 🔥 Copy bouton version 24px */}
       <button
         onClick={copyToClipboard}
-        className="rounded-full bg-white/10 hover:bg-white/20 transition p-2 flex items-center justify-center"
+        className="rounded-full bg-white/10 hover:bg-white/20 transition p-1.5 flex items-center justify-center"
       >
         <Copy className="w-4 h-4" />
       </button>
