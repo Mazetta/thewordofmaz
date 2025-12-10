@@ -30,10 +30,14 @@ interface ShareSectionProps {
 // reddit custom button
 function CustomRedditButton({ url, title }: { url: string; title: string }) {
   const shareReddit = () => {
+    const width = 660
+    const height = 460
+    const left = window.screenX + (window.outerWidth - width) / 2
+    const top = window.screenY + (window.outerHeight - height) / 2
     const redditUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(
       url
     )}&title=${encodeURIComponent(title)}`;
-    window.open(redditUrl, "_blank", "noopener,noreferrer,width=660,height=520");
+    window.open(redditUrl,"RedditShare",`width=${width},height=${height},top=${top},left=${left},toolbar=0,location=0,menubar=0,scrollbars=1,resizable=1`)
   };
 
   return (
