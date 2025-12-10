@@ -124,17 +124,6 @@ export default async function PostPage({ params }: PostPageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <article className="max-w-3xl mx-auto prose dark:prose-invert">
-        {post.coverImage && (
-          <div className="relative not-prose w-full mb-4 overflow-hidden rounded-2xl aspect-[16/9]">
-            <Image
-              src={post.coverImage}
-              alt={post.title}
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
-        )}
 
         <header className="mb-8">
           <div className="flex items-center gap-4 text-muted-foreground mb-4">
@@ -147,6 +136,19 @@ export default async function PostPage({ params }: PostPageProps) {
           <h1 className="text-4xl font-bold mb-4 text-foreground">
             {post.title}
           </h1>
+
+          {post.coverImage && (
+            <div className="relative not-prose w-full mb-4 overflow-hidden rounded-2xl aspect-[844/313]">
+              <Image
+                src={post.coverImage}
+                alt={post.title}
+                fill
+                className="object-cover"
+                sizes="100vw"
+                priority
+              />
+            </div>
+          )}
 
           <div className="flex gap-4 mb-4">
             {post.category && (
