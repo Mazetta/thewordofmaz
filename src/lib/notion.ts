@@ -50,7 +50,6 @@ export function getPostsFromCache(): Post[] {
 }
 
 export async function fetchPublishedPosts() {
-  // This function is now intended to be used only by the caching script.
   const posts = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID!,
     filter: {
@@ -80,6 +79,27 @@ export async function getPost(slug: string): Promise<Post | null> {
   return post || null;
 }
 
+/* 🔧 Fonction ajoutée : permet d'extraire une image depuis une propriété Notion de type "files"
+   (ce qui est le cas lorsque tu utilises "media" au lieu de "url")
+*/
+function extractMediaUrl(prop: any): string | undefined {
+  if (!prop || !prop.files || prop.files.length === 0) return undefined;
+
+  const file = prop.files[0];
+
+  // 🔹 Cas d'une image externe
+  if (file.type === "external") {
+    return file.external.url;
+  }
+
+  // 🔹 Cas d'une image envoyée dans Notion (URL signée qui expire)
+  if (file.type === "file") {
+    return file.file.url;
+  }
+
+  return undefined;
+}
+
 export async function getPostFromNotion(pageId: string): Promise<Post | null> {
   try {
     const page = (await notion.pages.retrieve({
@@ -88,7 +108,6 @@ export async function getPostFromNotion(pageId: string): Promise<Post | null> {
     const mdBlocks = await n2m.pageToMarkdown(pageId);
     const { parent: contentString } = n2m.toMarkdownString(mdBlocks);
 
-    // Get first paragraph for description (excluding empty lines)
     const paragraphs = contentString
       .split("\n")
       .filter((line: string) => line.trim().length > 0);
@@ -99,22 +118,26 @@ export async function getPostFromNotion(pageId: string): Promise<Post | null> {
     const properties = page.properties as any;
     const rawTitle = properties.Title.title[0]?.plain_text || "Untitled";
 
-    // Normalize and transliterate to preserve latin equivalents for accented chars
-    // Use NFKD to decompose characters, remove diacritic marks, and handle common ligatures
     const slugified = rawTitle
       .toLowerCase()
       .normalize("NFKD")
-      .replace(/[\u0300-\u036f]/g, "") // remove diacritic combining marks
+      .replace(/[\u0300-\u036f]/g, "")
       .replace(/œ/g, "oe")
       .replace(/æ/g, "ae")
-      .replace(/[^a-z0-9]+/g, "-") // Replace any non-alphanumeric chars with dash
-      .replace(/^-+|-+$/g, ""); // Remove leading/trailing dashes
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
 
     const post: Post = {
       id: page.id,
       title: rawTitle,
       slug: slugified || "untitled",
-      coverImage: properties["Featured Image"]?.url || undefined,
+
+      /* 🛠️ MODIFIÉ :
+         Avant → properties["Featured Image"]?.url
+         Maintenant → supporte une propriété Notion de type "Media" (files)
+      */
+      coverImage: extractMediaUrl(properties["Featured Image"]),
+
       description,
       date:
         properties["Published Date"]?.date?.start || new Date().toISOString(),
