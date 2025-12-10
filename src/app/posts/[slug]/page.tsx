@@ -125,19 +125,18 @@ export default async function PostPage({ params }: PostPageProps) {
       />
       <article className="max-w-3xl mx-auto prose dark:prose-invert">
         {post.coverImage && (
-          <div className="not-prose w-full mb-8 overflow-hidden rounded-2xl">
+          <div className="relative not-prose w-full mb-4 overflow-hidden rounded-2xl aspect-[16/9]">
             <Image
               src={post.coverImage}
               alt={post.title}
-              width={1200}   // largeur fixe ou adaptative
-              height={675}   // ratio 16:9 par exemple
-              className="w-full h-auto object-contain rounded-2xl"
+              fill
+              className="object-cover"
               priority
             />
           </div>
         )}
 
-        <header className="mb-8">
+        <header className="mb-6">
           <div className="flex items-center gap-4 text-muted-foreground mb-4">
             <time>{format(new Date(post.date), "dd MMMM yyyy", { locale: fr })}</time>
             {post.author && <span>Par {post.author}</span>}
