@@ -133,6 +133,7 @@ export default async function PostPage({ params }: PostPageProps) {
               height={675}   // ratio 16:9 par exemple
               className="w-full h-auto object-contain rounded-2xl"
               priority
+              prose-img:mb-0
             />
           </div>
         )}
