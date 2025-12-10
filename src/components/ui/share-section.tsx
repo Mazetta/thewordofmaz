@@ -4,9 +4,9 @@ import {
   TwitterShareButton,
   WhatsappShareButton,
   FacebookShareButton,
-	ThreadsShareButton,
-	BlueskyShareButton,
   EmailShareButton,
+  BlueskyShareButton,
+  ThreadsShareButton,
 } from "react-share";
 
 import {
@@ -14,13 +14,12 @@ import {
   RedditIcon,
   WhatsappIcon,
   FacebookIcon,
-	ThreadsIcon,
-	BlueskyIcon,
+  ThreadsIcon,
+  BlueskyIcon,
   EmailIcon,
 } from "react-share";
 
 import { Copy } from "lucide-react";
-
 import { useState } from "react";
 
 interface ShareSectionProps {
@@ -28,23 +27,18 @@ interface ShareSectionProps {
   url: string;
 }
 
-// custom Reddit button component
+// 🔥 Reddit custom button (version icône round)
 function CustomRedditButton({ url, title }: { url: string; title: string }) {
   const shareReddit = () => {
     const redditUrl = `https://www.reddit.com/submit?url=${encodeURIComponent(
       url
     )}&title=${encodeURIComponent(title)}`;
-
-    window.open(redditUrl, "_blank", "noopener,noreferrer,width=800,height=600");
+    window.open(redditUrl, "_blank", "noopener,noreferrer,width=660,height=520");
   };
 
   return (
-    <button
-      onClick={shareReddit}
-      className="p-2 rounded-lg bg-[#FF4500]/10 hover:bg-[#FF4500]/20 transition flex items-center gap-2"
-    >
-      <RedditIcon className="w-5 h-5 text-[#FF4500]" />
-      <span>Reddit</span>
+    <button onClick={shareReddit} className="rounded-full">
+      <RedditIcon size={32} round />
     </button>
   );
 }
@@ -59,54 +53,49 @@ export default function ShareSection({ title, url }: ShareSectionProps) {
   };
 
   return (
-    //<div className="mt-10 p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur">
-    //<h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-    //<Share2 className="w-5 h-5" />
-    // Partager cet article
-    //</h3>
+    <div className="flex items-center gap-3 my-6">
 
-    <div className="flex flex-wrap gap-3">
-
-      <TwitterShareButton url={url} title={title} className="group">
-        <div className="p-2 rounded-lg bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 transition flex items-center gap-2">
-          <XIcon className="w-5 h-5 text-[#1DA1F2]" />
-          <span>Twitter</span>
-        </div>
+      {/* X */}
+      <TwitterShareButton url={url} title={title}>
+        <XIcon size={32} round />
       </TwitterShareButton>
 
-      {/* bouton reddit */}
+      {/* Reddit custom */}
       <CustomRedditButton url={url} title={title} />
 
-      <FacebookShareButton url={url} title={title} className="group">
-        <div className="p-2 rounded-lg bg-[#1877F2]/10 hover:bg-[#1877F2]/20 transition flex items-center gap-2">
-          <FacebookIcon className="w-5 h-5 text-[#1877F2]" />
-          <span>Facebook</span>
-        </div>
-      </FacebookShareButton>
-
-      <WhatsappShareButton url={url} title={title} separator=" - " className="group">
-        <div className="p-2 rounded-lg bg-[#25D366]/10 hover:bg-[#25D366]/20 transition flex items-center gap-2">
-          <WhatsappIcon className="w-5 h-5 text-[#25D366]" />
-          <span>WhatsApp</span>
-        </div>
+      {/* WhatsApp */}
+      <WhatsappShareButton url={url} title={title}>
+        <WhatsappIcon size={32} round />
       </WhatsappShareButton>
 
-      <EmailShareButton url={url} subject={title} body={url} className="group">
-        <div className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition flex items-center gap-2">
-          <EmailIcon className="w-5 h-5" />
-          <span>Email</span>
-        </div>
+      {/* Facebook */}
+      <FacebookShareButton url={url} title={title}>
+        <FacebookIcon size={32} round />
+      </FacebookShareButton>
+
+      {/* Threads */}
+      <ThreadsShareButton url={url} title={title}>
+        <ThreadsIcon size={32} round />
+      </ThreadsShareButton>
+
+      {/* Bluesky */}
+      <BlueskyShareButton url={url} title={title}>
+        <BlueskyIcon size={32} round />
+      </BlueskyShareButton>
+
+      {/* Email */}
+      <EmailShareButton url={url} subject={title}>
+        <EmailIcon size={32} round />
       </EmailShareButton>
 
-      {/* Copier le lien */}
+      {/* Copy link */}
       <button
         onClick={copyToClipboard}
-        className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition flex items-center gap-2"
+        className="rounded-full bg-white/10 hover:bg-white/20 transition p-2 flex items-center justify-center"
       >
-        <Copy className="w-5 h-5" />
-        {copied ? "Copié !" : "Copier le lien"}
+        <Copy className="w-4 h-4" />
       </button>
+
     </div>
-    //</div>
   );
 }
