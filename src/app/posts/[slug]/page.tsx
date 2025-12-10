@@ -138,13 +138,20 @@ export default async function PostPage({ params }: PostPageProps) {
           </h1>
 
           {post.coverImage && (
-            <div className="relative not-prose w-full mb-4 overflow-hidden rounded-2xl aspect-[844/313]">
+            <div
+              className="
+                relative not-prose w-full mb-4 overflow-hidden rounded-2xl
+                aspect-[5/2] 
+                /* CHANGEMENT : ratio 5/2 = bannière optimisée 1600x640 */
+              "
+            >
               <Image
                 src={post.coverImage}
                 alt={post.title}
                 fill
                 className="object-cover"
                 sizes="100vw"
+                /* CHANGEMENT : sizes=100vw = toujours charger la bonne taille pour la largeur réelle */
                 priority
               />
             </div>
