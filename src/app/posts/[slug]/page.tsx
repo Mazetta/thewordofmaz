@@ -125,7 +125,7 @@ export default async function PostPage({ params }: PostPageProps) {
       />
       <article className="max-w-3xl mx-auto prose dark:prose-invert">
         {post.coverImage && (
-          <div className="relative aspect-video w-full mb-8">
+          <div className="relative aspect-video w-full mb-8 rounded-t-lg rounded-b-lg overflow-hidden">
             <Image
               src={post.coverImage}
               alt={post.title}
