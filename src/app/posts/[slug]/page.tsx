@@ -136,7 +136,7 @@ export default async function PostPage({ params }: PostPageProps) {
           </div>
         )}
 
-        <header className="mb-6">
+        <header className="mb-8">
           <div className="flex items-center gap-4 text-muted-foreground mb-4">
             <time>{format(new Date(post.date), "dd MMMM yyyy", { locale: fr })}</time>
             {post.author && <span>Par {post.author}</span>}
