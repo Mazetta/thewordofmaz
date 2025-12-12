@@ -121,14 +121,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-/* 🎨 Appliquer les couleurs du texte via data-attribute */
-span[data-color="#626264"] { color: #626264; }
-span[data-color="#744210"] { color: #744210; }
-span[data-color="#d9730d"] { color: #d9730d; }
-span[data-color="#dfa000"] { color: #dfa000; }
-span[data-color="#33a852"] { color: #33a852; }
-span[data-color="#0b6e99"] { color: #0b6e99; }
-span[data-color="#6940a5"] { color: #6940a5; }
-span[data-color="#d946ef"] { color: #d946ef; }
-span[data-color="#d20c0c"] { color: #d20c0c; }

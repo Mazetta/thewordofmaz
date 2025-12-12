@@ -8,17 +8,17 @@ export const notion = new Client({ auth: process.env.NOTION_TOKEN });
 export const n2m = new NotionToMarkdown({ notionClient: notion });
 
 // 🎨 Mappage des couleurs Notion vers des couleurs CSS
-const NOTION_COLOR_MAP: { [key: string]: string } = {
-  "default": "inherit",
-  "gray": "#626264",
-  "brown": "#744210",
-  "orange": "#d9730d",
-  "yellow": "#dfa000",
-  "green": "#33a852",
-  "blue": "#0b6e99",
-  "purple": "#6940a5",
-  "pink": "#d946ef",
-  "red": "#d20c0c",
+const NOTION_COLOR_MAP: { [key: string]: { name: string; hex: string } } = {
+  "default": { name: "default", hex: "inherit" },
+  "gray": { name: "gray", hex: "#626264" },
+  "brown": { name: "brown", hex: "#744210" },
+  "orange": { name: "orange", hex: "#d9730d" },
+  "yellow": { name: "yellow", hex: "#dfa000" },
+  "green": { name: "green", hex: "#33a852" },
+  "blue": { name: "blue", hex: "#0b6e99" },
+  "purple": { name: "purple", hex: "#6940a5" },
+  "pink": { name: "pink", hex: "#d946ef" },
+  "red": { name: "red", hex: "#d20c0c" },
 };
 
 // 🎨 Conversion des annotations Notion en HTML avec data-attributes pour les couleurs
@@ -46,14 +46,19 @@ function convertAnnotations(text: string, annotations: any): string {
   // Couleur de fond
   if (annotations?.color && annotations.color.includes("_background")) {
     const colorName = annotations.color.replace("_background", "");
-    const bgColor = NOTION_COLOR_MAP[colorName] || colorName;
-    html = `<span style="background-color: ${bgColor}20; padding: 2px 4px; border-radius: 3px;">${html}</span>`;
+    const colorInfo = NOTION_COLOR_MAP[colorName];
+    if (colorInfo) {
+      html = `<span style="background-color: ${colorInfo.hex}20; padding: 2px 4px; border-radius: 3px;">${html}</span>`;
+    }
   }
   
   // Couleur de texte
   if (annotations?.color && annotations.color !== "default" && !annotations.color.includes("_background")) {
-    const color = NOTION_COLOR_MAP[annotations.color] || annotations.color;
-    html = `<span data-color="${color}">${html}</span>`;
+    const colorName = annotations.color;
+    const colorInfo = NOTION_COLOR_MAP[colorName];
+    if (colorInfo) {
+      html = `<span data-color="${colorInfo.name}" style="color: ${colorInfo.hex};">${html}</span>`;
+    }
   }
   
   return html;
