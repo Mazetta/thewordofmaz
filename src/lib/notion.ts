@@ -34,19 +34,25 @@ function convertAnnotations(text: string, annotations: any): string {
 
   let html = text;
   
-  // Appliquer les formatages avec la couleur directement dessus
+  // Appliquer TOUS les formatages (pas else if!)
   if (annotations?.bold) {
     html = `<strong ${colorStyle}>${html}</strong>`;
-  } else if (annotations?.italic) {
+  }
+  if (annotations?.italic) {
     html = `<em ${colorStyle}>${html}</em>`;
-  } else if (annotations?.strikethrough) {
+  }
+  if (annotations?.strikethrough) {
     html = `<del ${colorStyle}>${html}</del>`;
-  } else if (annotations?.underline) {
+  }
+  if (annotations?.underline) {
     html = `<u ${colorStyle}>${html}</u>`;
-  } else if (annotations?.code) {
+  }
+  if (annotations?.code) {
     html = `<code class="bg-gray-200 dark:bg-gray-800 px-1 rounded" ${colorStyle}>${html}</code>`;
-  } else if (colorStyle) {
-    // Pas de formatage, juste la couleur
+  }
+  
+  // Si pas de formatage mais il y a une couleur, ajouter un span
+  if (colorStyle && !annotations?.bold && !annotations?.italic && !annotations?.strikethrough && !annotations?.underline && !annotations?.code) {
     html = `<span ${colorStyle}>${html}</span>`;
   }
   
