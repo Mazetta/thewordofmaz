@@ -38,7 +38,7 @@ export default function Layout({ children }: LayoutProps) {
 
       {/* Footer collé en bas grâce à mt-auto */}
       <footer className="bg-zinc-900 dark:bg-zinc-950 border-t mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center flex flex-col items-center">
           <SocialLinks />
         </div>
       </footer>
