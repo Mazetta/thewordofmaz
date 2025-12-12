@@ -25,6 +25,13 @@ const NOTION_COLOR_MAP: { [key: string]: string } = {
 function convertAnnotations(text: string, annotations: any): string {
   let html = text;
   
+  // 🎨 Appliquer la couleur du texte EN PREMIER (avant autres formatages)
+  if (annotations?.color && annotations.color !== "default") {
+    const color = NOTION_COLOR_MAP[annotations.color.replace("_background", "")] || annotations.color;
+    html = `<span data-color="${color}">${html}</span>`;
+  }
+  
+  // Puis appliquer les autres styles de texte
   if (annotations?.bold) {
     html = `<strong>${html}</strong>`;
   }
@@ -39,12 +46,6 @@ function convertAnnotations(text: string, annotations: any): string {
   }
   if (annotations?.code) {
     html = `<code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">${html}</code>`;
-  }
-  
-  // 🎨 Appliquer la couleur du texte via data-attribute (pas de style inline)
-  if (annotations?.color && annotations.color !== "default") {
-    const color = NOTION_COLOR_MAP[annotations.color.replace("_background", "")] || annotations.color;
-    html = `<span data-color="${color}">${html}</span>`;
   }
   
   // 🎨 Appliquer la couleur de fond
