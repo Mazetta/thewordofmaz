@@ -25,10 +25,18 @@ const NOTION_COLOR_MAP: { [key: string]: string } = {
 function convertAnnotations(text: string, annotations: any): string {
   let html = text;
   
-  // 🎨 Appliquer la couleur du texte EN PREMIER (avant autres formatages)
-  if (annotations?.color && annotations.color !== "default") {
-    const color = NOTION_COLOR_MAP[annotations.color.replace("_background", "")] || annotations.color;
+  // 🎨 Appliquer les couleurs EN PREMIER (avant autres formatages)
+  // Couleur de texte
+  if (annotations?.color && annotations.color !== "default" && !annotations.color.includes("_background")) {
+    const color = NOTION_COLOR_MAP[annotations.color] || annotations.color;
     html = `<span data-color="${color}">${html}</span>`;
+  }
+  
+  // Couleur de fond
+  if (annotations?.color && annotations.color.includes("_background")) {
+    const colorName = annotations.color.replace("_background", "");
+    const bgColor = NOTION_COLOR_MAP[colorName] || colorName;
+    html = `<span style="background-color: ${bgColor}20; padding: 2px 4px; border-radius: 3px;">${html}</span>`;
   }
   
   // Puis appliquer les autres styles de texte
@@ -46,13 +54,6 @@ function convertAnnotations(text: string, annotations: any): string {
   }
   if (annotations?.code) {
     html = `<code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">${html}</code>`;
-  }
-  
-  // 🎨 Appliquer la couleur de fond
-  if (annotations?.color && annotations.color.includes("_background")) {
-    const colorName = annotations.color.replace("_background", "");
-    const bgColor = NOTION_COLOR_MAP[colorName] || colorName;
-    html = `<span style="background-color: ${bgColor}20; padding: 2px 4px; border-radius: 3px;">${html}</span>`;
   }
   
   return html;
