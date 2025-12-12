@@ -76,7 +76,9 @@ function convertAnnotations(text: string, annotations: NotionAnnotations): strin
   // 3️⃣ Appliquer la couleur de fond EN DERNIER
   const bgColor = getBackgroundColor(annotations?.color);
   if (bgColor) {
-    html = `<span style="background-color: ${bgColor}20; padding: 2px 4px; border-radius: 3px;">${html}</span>`;
+    // Si on a un background, appliquer AUSSI la couleur de texte basée sur le background
+    // (parce que Notion remplace la couleur de texte par le background)
+    html = `<span style="color: ${bgColor}; background-color: ${bgColor}20; padding: 2px 4px; border-radius: 3px;">${html}</span>`;
   }
   
   return html;
