@@ -27,7 +27,7 @@ const NavButtons = ({ currentSlug, allPosts }: NavButtonsProps) => {
       {previousPost ? (
         <Link 
           href={`/posts/${previousPost.slug}`}
-          className="text-muted-foreground hover:text-foreground transition-colors"
+          className="text-muted-foreground"
         >
           ← Post Précédent
         </Link>
@@ -38,7 +38,7 @@ const NavButtons = ({ currentSlug, allPosts }: NavButtonsProps) => {
       {nextPost && (
         <Link 
           href={`/posts/${nextPost.slug}`}
-          className="text-muted-foreground hover:text-foreground transition-colors"
+          className="text-muted-foreground"
         >
           Post Suivant →
         </Link>
