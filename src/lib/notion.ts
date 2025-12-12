@@ -23,37 +23,31 @@ const NOTION_COLOR_MAP: { [key: string]: { name: string; hex: string } } = {
 
 // 🎨 Conversion des annotations Notion en HTML
 function convertAnnotations(text: string, annotations: any): string {
-  // Extraire la couleur une fois
-  let colorStyle = "";
+  let html = text;
+  
+  // Appliquer TOUS les formatages (sans couleur)
+  if (annotations?.bold) {
+    html = `<strong>${html}</strong>`;
+  }
+  if (annotations?.italic) {
+    html = `<em>${html}</em>`;
+  }
+  if (annotations?.strikethrough) {
+    html = `<del>${html}</del>`;
+  }
+  if (annotations?.underline) {
+    html = `<u>${html}</u>`;
+  }
+  if (annotations?.code) {
+    html = `<code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">${html}</code>`;
+  }
+  
+  // Envelopper TOUT dans la couleur
   if (annotations?.color && annotations.color !== "default" && !annotations.color.includes("_background")) {
     const colorInfo = NOTION_COLOR_MAP[annotations.color];
     if (colorInfo && colorInfo.hex !== "inherit") {
-      colorStyle = `style="color: ${colorInfo.hex}"`;
+      html = `<span style="color: ${colorInfo.hex}">${html}</span>`;
     }
-  }
-
-  let html = text;
-  
-  // Appliquer TOUS les formatages (pas else if!)
-  if (annotations?.bold) {
-    html = `<strong ${colorStyle}>${html}</strong>`;
-  }
-  if (annotations?.italic) {
-    html = `<em ${colorStyle}>${html}</em>`;
-  }
-  if (annotations?.strikethrough) {
-    html = `<del ${colorStyle}>${html}</del>`;
-  }
-  if (annotations?.underline) {
-    html = `<u ${colorStyle}>${html}</u>`;
-  }
-  if (annotations?.code) {
-    html = `<code class="bg-gray-200 dark:bg-gray-800 px-1 rounded" ${colorStyle}>${html}</code>`;
-  }
-  
-  // Si pas de formatage mais il y a une couleur, ajouter un span
-  if (colorStyle && !annotations?.bold && !annotations?.italic && !annotations?.strikethrough && !annotations?.underline && !annotations?.code) {
-    html = `<span ${colorStyle}>${html}</span>`;
   }
   
   // Couleur de fond
