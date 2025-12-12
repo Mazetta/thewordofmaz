@@ -1,11 +1,174 @@
 import { Client } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
-import { PageObjectResponse } from "@notionhq/client/";
+import { PageObjectResponse, BlockObjectResponse } from "@notionhq/client/";
 import fs from "fs";
 import path from "path";
 
 export const notion = new Client({ auth: process.env.NOTION_TOKEN });
 export const n2m = new NotionToMarkdown({ notionClient: notion });
+
+// 🎨 Mappage des couleurs Notion vers des couleurs CSS
+const NOTION_COLOR_MAP: { [key: string]: string } = {
+  "default": "inherit",
+  "gray": "#626264",
+  "brown": "#744210",
+  "orange": "#d9730d",
+  "yellow": "#dfa000",
+  "green": "#33a852",
+  "blue": "#0b6e99",
+  "purple": "#6940a5",
+  "pink": "#d946ef",
+  "red": "#d20c0c",
+};
+
+// 🎨 Conversion des annotations Notion en HTML avec styles inline
+function convertAnnotations(text: string, annotations: any): string {
+  let html = text;
+  
+  if (annotations?.bold) {
+    html = `<strong>${html}</strong>`;
+  }
+  if (annotations?.italic) {
+    html = `<em>${html}</em>`;
+  }
+  if (annotations?.strikethrough) {
+    html = `<del>${html}</del>`;
+  }
+  if (annotations?.underline) {
+    html = `<u>${html}</u>`;
+  }
+  if (annotations?.code) {
+    html = `<code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">${html}</code>`;
+  }
+  
+  // 🎨 Appliquer la couleur du texte
+  if (annotations?.color && annotations.color !== "default") {
+    const color = NOTION_COLOR_MAP[annotations.color.replace("_background", "")] || annotations.color;
+    html = `<span style="color: ${color};">${html}</span>`;
+  }
+  
+  // 🎨 Appliquer la couleur de fond
+  if (annotations?.color && annotations.color.includes("_background")) {
+    const colorName = annotations.color.replace("_background", "");
+    const bgColor = NOTION_COLOR_MAP[colorName] || colorName;
+    html = `<span style="background-color: ${bgColor}20; padding: 2px 4px; border-radius: 3px;">${html}</span>`;
+  }
+  
+  return html;
+}
+
+// 📝 Conversion personnalisée des blocs Notion en Markdown avec support des couleurs
+async function notionBlocksToMarkdown(blocks: BlockObjectResponse[]): Promise<string> {
+  let markdown = "";
+  
+  for (const block of blocks) {
+    // Traiter les blocs
+    if (block.type === "paragraph") {
+      const paragraph = (block as any).paragraph;
+      const content = paragraph.rich_text
+        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
+        .join("");
+      markdown += content ? `${content}\n\n` : "\n";
+    } else if (block.type === "heading_1") {
+      const heading = (block as any).heading_1;
+      const content = heading.rich_text
+        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
+        .join("");
+      markdown += `# ${content}\n\n`;
+    } else if (block.type === "heading_2") {
+      const heading = (block as any).heading_2;
+      const content = heading.rich_text
+        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
+        .join("");
+      markdown += `## ${content}\n\n`;
+    } else if (block.type === "heading_3") {
+      const heading = (block as any).heading_3;
+      const content = heading.rich_text
+        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
+        .join("");
+      markdown += `### ${content}\n\n`;
+    } else if (block.type === "bulleted_list_item") {
+      const item = (block as any).bulleted_list_item;
+      const content = item.rich_text
+        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
+        .join("");
+      markdown += `- ${content}\n`;
+      
+      // Gérer les enfants
+      if (block.has_children) {
+        const children = await notion.blocks.children.list({ block_id: block.id });
+        const childMarkdown = await notionBlocksToMarkdown(children.results as BlockObjectResponse[]);
+        const indented = childMarkdown
+          .split("\n")
+          .map(line => line ? `  ${line}` : line)
+          .join("\n");
+        markdown += indented;
+      }
+    } else if (block.type === "numbered_list_item") {
+      const item = (block as any).numbered_list_item;
+      const content = item.rich_text
+        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
+        .join("");
+      markdown += `1. ${content}\n`;
+      
+      // Gérer les enfants
+      if (block.has_children) {
+        const children = await notion.blocks.children.list({ block_id: block.id });
+        const childMarkdown = await notionBlocksToMarkdown(children.results as BlockObjectResponse[]);
+        const indented = childMarkdown
+          .split("\n")
+          .map(line => line ? `  ${line}` : line)
+          .join("\n");
+        markdown += indented;
+      }
+    } else if (block.type === "quote") {
+      const quote = (block as any).quote;
+      const content = quote.rich_text
+        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
+        .join("");
+      markdown += `> ${content}\n\n`;
+    } else if (block.type === "code") {
+      const code = (block as any).code;
+      const language = code.language || "text";
+      const content = code.rich_text
+        .map((text: any) => text.plain_text)
+        .join("");
+      markdown += `\`\`\`${language}\n${content}\n\`\`\`\n\n`;
+    } else if (block.type === "image") {
+      const image = (block as any).image;
+      let imageUrl = "";
+      if (image.type === "external") {
+        imageUrl = image.external.url;
+      } else if (image.type === "file") {
+        imageUrl = image.file.url;
+      }
+      if (imageUrl) {
+        markdown += `![](${imageUrl})\n\n`;
+      }
+    } else if (block.type === "divider") {
+      markdown += `---\n\n`;
+    } else if (block.type === "table_of_contents") {
+      // Ignorer la table des matières
+      continue;
+    } else if (block.type === "table") {
+      // Gérer les tableaux simples
+      if (block.has_children) {
+        const rows = await notion.blocks.children.list({ block_id: block.id });
+        for (const row of rows.results) {
+          if ((row as any).type === "table_row") {
+            const cells = (row as any).table_row?.cells || [];
+            markdown += "| " + cells.map((cell: any[]) => 
+              cell.map((text: any) => convertAnnotations(text.plain_text, text.annotations)).join("")
+            ).join(" | ") + " |\n";
+          }
+        }
+        markdown += "\n";
+      }
+    }
+  }
+  
+  return markdown;
+}
 
 export interface Post {
   id: string;
@@ -105,8 +268,12 @@ export async function getPostFromNotion(pageId: string): Promise<Post | null> {
     const page = (await notion.pages.retrieve({
       page_id: pageId,
     })) as PageObjectResponse;
-    const mdBlocks = await n2m.pageToMarkdown(pageId);
-    const { parent: contentString } = n2m.toMarkdownString(mdBlocks);
+    
+    // 🎨 Utiliser la conversion personnalisée qui préserve les couleurs
+    const blocks = await notion.blocks.children.list({
+      block_id: pageId,
+    });
+    const contentString = await notionBlocksToMarkdown(blocks.results as BlockObjectResponse[]);
 
     const paragraphs = contentString
       .split("\n")

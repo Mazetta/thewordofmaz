@@ -25,6 +25,22 @@ const components = {
       {children}
     </a>
   ),
+  // 🎨 Support pour les spans avec styles inline (couleurs Notion)
+  span: (props: any) => (
+    <span {...props} />
+  ),
+  strong: ({ children }: { children?: React.ReactNode }) => (
+    <strong>{children}</strong>
+  ),
+  em: ({ children }: { children?: React.ReactNode }) => (
+    <em>{children}</em>
+  ),
+  u: ({ children }: { children?: React.ReactNode }) => (
+    <u>{children}</u>
+  ),
+  del: ({ children }: { children?: React.ReactNode }) => (
+    <del>{children}</del>
+  ),
   ul: ({ children }: { children?: React.ReactNode }) => (
     <ul className="mb-4 list-disc pl-5">{children}</ul>
   ),
