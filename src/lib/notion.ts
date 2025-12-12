@@ -29,7 +29,8 @@ function cleanExtraSpaces(html: string): string {
 
 // 🎨 Conversion des annotations Notion en HTML avec styles inline
 function convertAnnotations(text: string, annotations: any): string {
-  let html = text;
+  // 🔧 Nettoyer les espaces dupliqués au niveau de chaque segment
+  let html = text.replace(/ {2,}/g, ' ');
   
   if (annotations?.bold) {
     html = `<strong>${html}</strong>`;
