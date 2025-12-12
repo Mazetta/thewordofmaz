@@ -121,12 +121,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-/* 🎨 Forcer l'héritage de la couleur pour les éléments enfants */
-span[style*="color"] > strong,
-span[style*="color"] > em,
-span[style*="color"] > del,
-span[style*="color"] > u,
-span[style*="color"] > code {
-  color: inherit !important;
-}
