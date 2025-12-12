@@ -21,43 +21,48 @@ const NOTION_COLOR_MAP: { [key: string]: { name: string; hex: string } } = {
   "red": { name: "red", hex: "#d20c0c" },
 };
 
-// 🎨 Conversion des annotations Notion en HTML avec data-attributes pour les couleurs
+// 🎨 Conversion des annotations Notion en HTML avec support des couleurs
 function convertAnnotations(text: string, annotations: any): string {
+  // Déterminer le style de couleur à appliquer
+  let colorStyle = "";
+  if (annotations?.color && annotations.color !== "default" && !annotations.color.includes("_background")) {
+    const colorName = annotations.color;
+    const colorInfo = NOTION_COLOR_MAP[colorName];
+    if (colorInfo && colorInfo.hex !== "inherit") {
+      colorStyle = ` style="color: ${colorInfo.hex};"`;
+    }
+  }
+
   let html = text;
   
-  // Appliquer les styles de texte d'abord
+  // Appliquer les styles de texte avec la couleur directement sur chaque élément
   if (annotations?.bold) {
-    html = `<strong>${html}</strong>`;
+    html = `<strong${colorStyle}>${html}</strong>`;
   }
   if (annotations?.italic) {
-    html = `<em>${html}</em>`;
+    html = `<em${colorStyle}>${html}</em>`;
   }
   if (annotations?.strikethrough) {
-    html = `<del>${html}</del>`;
+    html = `<del${colorStyle}>${html}</del>`;
   }
   if (annotations?.underline) {
-    html = `<u>${html}</u>`;
+    html = `<u${colorStyle}>${html}</u>`;
   }
   if (annotations?.code) {
-    html = `<code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">${html}</code>`;
+    html = `<code class="bg-gray-200 dark:bg-gray-800 px-1 rounded"${colorStyle}>${html}</code>`;
+  }
+
+  // Si pas de formatage texte mais il y a une couleur, ajouter un span
+  if (colorStyle && !annotations?.bold && !annotations?.italic && !annotations?.strikethrough && !annotations?.underline && !annotations?.code) {
+    html = `<span${colorStyle}>${html}</span>`;
   }
   
-  // 🎨 Appliquer les couleurs EN DERNIER (pour envelopper tous les autres formatages)
   // Couleur de fond
   if (annotations?.color && annotations.color.includes("_background")) {
     const colorName = annotations.color.replace("_background", "");
     const colorInfo = NOTION_COLOR_MAP[colorName];
     if (colorInfo) {
       html = `<span style="background-color: ${colorInfo.hex}20; padding: 2px 4px; border-radius: 3px;">${html}</span>`;
-    }
-  }
-  
-  // Couleur de texte
-  if (annotations?.color && annotations.color !== "default" && !annotations.color.includes("_background")) {
-    const colorName = annotations.color;
-    const colorInfo = NOTION_COLOR_MAP[colorName];
-    if (colorInfo) {
-      html = `<span data-color="${colorInfo.name}" style="color: ${colorInfo.hex};">${html}</span>`;
     }
   }
   
