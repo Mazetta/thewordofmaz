@@ -1,24 +1,33 @@
 'use client';
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTwitter, faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import { faDiscord, faXTwitter, faBluesky, faReddit, faYoutube } from "@fortawesome/free-brands-svg-icons";
+import { faEnvelope, faRss } from "@fortawesome/free-solid-svg-icons";
 
 export function SocialLinks() {
   return (
     <div className="flex flex-col items-center gap-4 mb-4">
       <div className="flex justify-center gap-6">
-        <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter">
-          <FontAwesomeIcon icon={faTwitter} size="lg" />
+        <a href="https://discord.gg/UynQvcv8GQ" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Discord">
+          <FontAwesomeIcon icon={faDiscord} size="lg" />
         </a>
-        <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
-          <FontAwesomeIcon icon={faGithub} size="lg" />
+        <a href="https://x.com/Mazeriio" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Discord">
+          <FontAwesomeIcon icon={faXTwitter} size="lg" />
         </a>
-        <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="LinkedIn">
-          <FontAwesomeIcon icon={faLinkedin} size="lg" />
+        <a href="https://bsky.app/profile/@mazeriio.net" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Discord">
+          <FontAwesomeIcon icon={faBluesky} size="lg" />
         </a>
-        <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Email">
+        <a href="https://www.reddit.com/user/Mazeriio" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
+          <FontAwesomeIcon icon={faReddit} size="lg" />
+        </a>
+        <a href="https://www.youtube.com/@Mazeriio" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="LinkedIn">
+          <FontAwesomeIcon icon={faYoutube} size="lg" />
+        </a>
+        <a href="mailto:contact@mazeriio.net" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Email">
           <FontAwesomeIcon icon={faEnvelope} size="lg" />
+        </a>
+        <a href="https://www.mazeriio.net/rss.xml" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Email">
+          <FontAwesomeIcon icon={faRss} size="lg" />
         </a>
       </div>
     </div>
