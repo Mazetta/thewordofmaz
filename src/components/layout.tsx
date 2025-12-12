@@ -40,9 +40,6 @@ export default function Layout({ children }: LayoutProps) {
       <footer className="bg-zinc-900 dark:bg-zinc-950 border-t mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
           <SocialLinks />
-          <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} Mazeriio. Tous droits réservés.
-          </p>
         </div>
       </footer>
     </div>
