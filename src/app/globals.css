@@ -121,3 +121,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* 🎨 Forcer l'héritage de la couleur */
+strong, em, del, u, code {
+  color: inherit;
+}
