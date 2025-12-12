@@ -121,3 +121,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* 🎨 Appliquer les couleurs du texte via data-attribute */
+span[data-color] {
+  color: var(--text-color);
+}
+
+span[data-color="#626264"] { --text-color: #626264; }
+span[data-color="#744210"] { --text-color: #744210; }
+span[data-color="#d9730d"] { --text-color: #d9730d; }
+span[data-color="#dfa000"] { --text-color: #dfa000; }
+span[data-color="#33a852"] { --text-color: #33a852; }
+span[data-color="#0b6e99"] { --text-color: #0b6e99; }
+span[data-color="#6940a5"] { --text-color: #6940a5; }
+span[data-color="#d946ef"] { --text-color: #d946ef; }
+span[data-color="#d20c0c"] { --text-color: #d20c0c; }

@@ -51,7 +51,7 @@ function convertAnnotations(text: string, annotations: any): string {
   // 🎨 Appliquer la couleur du texte
   if (annotations?.color && annotations.color !== "default") {
     const color = NOTION_COLOR_MAP[annotations.color.replace("_background", "")] || annotations.color;
-    html = `<span style="color: ${color};">${html}</span>`;
+    html = `<span data-color="${color}">${html}</span>`;
   }
   
   // 🎨 Appliquer la couleur de fond
