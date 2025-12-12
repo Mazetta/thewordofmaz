@@ -12,8 +12,8 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { fr } from "date-fns/locale";
 import ShareSection from "@/components/ui/share-section";
-
 import GiscusComments from "@/components/giscus-comments";
+import NavButtons from "@/components/nav-buttons";
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
@@ -84,6 +84,7 @@ export async function generateMetadata(
 export default async function PostPage({ params }: PostPageProps) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
+  const allPosts = await getAllPosts();
   const wordCount = post?.content ? getWordCount(post.content) : 0;
 
   if (!post) {
@@ -181,6 +182,11 @@ export default async function PostPage({ params }: PostPageProps) {
             {post.content}
           </ReactMarkdown>
         </div>
+
+        <NavButtons 
+          currentSlug={post.slug} 
+          allPosts={allPosts.map(p => ({ slug: p.slug, title: p.title }))} 
+        />
 
         <GiscusComments/>
 
