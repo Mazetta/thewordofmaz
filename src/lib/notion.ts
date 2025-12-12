@@ -22,10 +22,12 @@ const NOTION_COLOR_MAP: { [key: string]: string } = {
 };
 
 // 🔧 Optimiser l'espacement autour des spans coloriés
-// Déplace les espaces AVANT le span À L'INTÉRIEUR pour une sélection continue
+// Déplace les espaces AVANT et APRÈS le span À L'INTÉRIEUR pour une sélection continue
 function optimizeColoredSpaces(html: string): string {
   // Déplacer les espaces blancs avant les spans À L'INTÉRIEUR du span
-  html = html.replace(/ (<span style="color:[^"]*;">)/g, '$1 ');
+  html = html.replace(/ (<span style="[^"]*;">)/g, '$1 ');
+  // Déplacer les espaces blancs après les spans À L'INTÉRIEUR du span
+  html = html.replace(/(<\/span>) /g, ' $1');
   return html;
 }
 
