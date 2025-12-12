@@ -41,8 +41,11 @@ function getBackgroundColor(color?: string): string | null {
 
 // 🎨 Extraire les informations de couleur de texte
 function getTextColor(color?: string): string | null {
-  if (!color || color === "default" || color.includes("_background")) return null;
-  const colorInfo = NOTION_COLOR_MAP[color];
+  if (!color || color === "default") return null;
+  
+  // Gérer les backgrounds: "red_background" -> extraire "red" pour la couleur du texte
+  const colorName = color.replace("_background", "");
+  const colorInfo = NOTION_COLOR_MAP[colorName];
   return (colorInfo && colorInfo.hex !== "inherit") ? colorInfo.hex : null;
 }
 
