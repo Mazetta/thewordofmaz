@@ -6,7 +6,7 @@ import { faEnvelope, faRss } from "@fortawesome/free-solid-svg-icons";
 
 export function SocialLinks() {
   return (
-    <div className="flex flex-col items-center gap-4 mb-4">
+    <div className="flex flex-col items-center gap-4 mb-2">
       <div className="flex justify-center gap-6">
         <a href="https://discord.gg/UynQvcv8GQ" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Discord">
           <FontAwesomeIcon icon={faDiscord} size="lg" />
