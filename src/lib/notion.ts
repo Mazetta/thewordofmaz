@@ -7,6 +7,16 @@ import path from "path";
 export const notion = new Client({ auth: process.env.NOTION_TOKEN });
 export const n2m = new NotionToMarkdown({ notionClient: notion });
 
+// Type pour les annotations
+interface NotionAnnotations {
+  bold?: boolean;
+  italic?: boolean;
+  strikethrough?: boolean;
+  underline?: boolean;
+  code?: boolean;
+  color?: string;
+}
+
 // 🎨 Mappage des couleurs Notion vers des couleurs CSS
 const NOTION_COLOR_MAP: { [key: string]: { name: string; hex: string } } = {
   "default": { name: "default", hex: "inherit" },
@@ -21,11 +31,26 @@ const NOTION_COLOR_MAP: { [key: string]: { name: string; hex: string } } = {
   "red": { name: "red", hex: "#d20c0c" },
 };
 
+// 🎨 Extraire les informations de couleur de fond
+function getBackgroundColor(color?: string): string | null {
+  if (!color || !color.includes("_background")) return null;
+  const colorName = color.replace("_background", "");
+  const colorInfo = NOTION_COLOR_MAP[colorName];
+  return colorInfo ? colorInfo.hex : null;
+}
+
+// 🎨 Extraire les informations de couleur de texte
+function getTextColor(color?: string): string | null {
+  if (!color || color === "default" || color.includes("_background")) return null;
+  const colorInfo = NOTION_COLOR_MAP[color];
+  return (colorInfo && colorInfo.hex !== "inherit") ? colorInfo.hex : null;
+}
+
 // 🎨 Conversion des annotations Notion en HTML
-function convertAnnotations(text: string, annotations: any): string {
+function convertAnnotations(text: string, annotations: NotionAnnotations): string {
   let html = text;
   
-  // Appliquer TOUS les formatages (sans couleur)
+  // 1️⃣ Appliquer TOUS les formatages (sans couleur)
   if (annotations?.bold) {
     html = `<strong>${html}</strong>`;
   }
@@ -42,21 +67,16 @@ function convertAnnotations(text: string, annotations: any): string {
     html = `<code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">${html}</code>`;
   }
   
-  // Envelopper TOUT dans la couleur
-  if (annotations?.color && annotations.color !== "default" && !annotations.color.includes("_background")) {
-    const colorInfo = NOTION_COLOR_MAP[annotations.color];
-    if (colorInfo && colorInfo.hex !== "inherit") {
-      html = `<span style="color: ${colorInfo.hex}">${html}</span>`;
-    }
+  // 2️⃣ Appliquer la couleur de texte
+  const textColor = getTextColor(annotations?.color);
+  if (textColor) {
+    html = `<span style="color: ${textColor}">${html}</span>`;
   }
   
-  // Couleur de fond
-  if (annotations?.color && annotations.color.includes("_background")) {
-    const colorName = annotations.color.replace("_background", "");
-    const colorInfo = NOTION_COLOR_MAP[colorName];
-    if (colorInfo) {
-      html = `<span style="background-color: ${colorInfo.hex}20; padding: 2px 4px; border-radius: 3px;">${html}</span>`;
-    }
+  // 3️⃣ Appliquer la couleur de fond EN DERNIER
+  const bgColor = getBackgroundColor(annotations?.color);
+  if (bgColor) {
+    html = `<span style="background-color: ${bgColor}20; padding: 2px 4px; border-radius: 3px;">${html}</span>`;
   }
   
   return html;
