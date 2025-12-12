@@ -23,9 +23,8 @@ const NOTION_COLOR_MAP: { [key: string]: string } = {
 
 // 🔧 Nettoyer les espaces multiples consécutifs
 function cleanExtraSpaces(html: string): string {
-  // Remplacer 2+ espaces par 1 seul, mais pas à l'intérieur des tags HTML
-  // On utilise une regex prudente qui cherche les espaces multiples en dehors des tags
-  return html.replace(/([^>])\s{2,}([^<])/g, '$1 $2');
+  // Remplacer TOUS les espaces multiples (2+) par un seul espace, partout
+  return html.replace(/ {2,}/g, ' ');
 }
 
 // 🎨 Conversion des annotations Notion en HTML avec styles inline
