@@ -21,6 +21,13 @@ const NOTION_COLOR_MAP: { [key: string]: string } = {
   "red": "#d20c0c",
 };
 
+// 🔧 Nettoyer les espaces multiples consécutifs
+function cleanExtraSpaces(html: string): string {
+  // Remplacer 2+ espaces par 1 seul, mais pas à l'intérieur des tags HTML
+  // On utilise une regex prudente qui cherche les espaces multiples en dehors des tags
+  return html.replace(/([^>])\s{2,}([^<])/g, '$1 $2');
+}
+
 // 🎨 Conversion des annotations Notion en HTML avec styles inline
 function convertAnnotations(text: string, annotations: any): string {
   let html = text;
@@ -68,31 +75,31 @@ async function notionBlocksToMarkdown(blocks: BlockObjectResponse[]): Promise<st
       const content = paragraph.rich_text
         .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
         .join("");
-      markdown += content ? `${content}\n\n` : "\n";
+      markdown += content ? `${cleanExtraSpaces(content)}\n\n` : "\n";
     } else if (block.type === "heading_1") {
       const heading = (block as any).heading_1;
       const content = heading.rich_text
         .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
         .join("");
-      markdown += `# ${content}\n\n`;
+      markdown += `# ${cleanExtraSpaces(content)}\n\n`;
     } else if (block.type === "heading_2") {
       const heading = (block as any).heading_2;
       const content = heading.rich_text
         .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
         .join("");
-      markdown += `## ${content}\n\n`;
+      markdown += `## ${cleanExtraSpaces(content)}\n\n`;
     } else if (block.type === "heading_3") {
       const heading = (block as any).heading_3;
       const content = heading.rich_text
         .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
         .join("");
-      markdown += `### ${content}\n\n`;
+      markdown += `### ${cleanExtraSpaces(content)}\n\n`;
     } else if (block.type === "bulleted_list_item") {
       const item = (block as any).bulleted_list_item;
       const content = item.rich_text
         .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
         .join("");
-      markdown += `- ${content}\n`;
+      markdown += `- ${cleanExtraSpaces(content)}\n`;
       
       // Gérer les enfants
       if (block.has_children) {
@@ -109,7 +116,7 @@ async function notionBlocksToMarkdown(blocks: BlockObjectResponse[]): Promise<st
       const content = item.rich_text
         .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
         .join("");
-      markdown += `1. ${content}\n`;
+      markdown += `1. ${cleanExtraSpaces(content)}\n`;
       
       // Gérer les enfants
       if (block.has_children) {
@@ -126,7 +133,7 @@ async function notionBlocksToMarkdown(blocks: BlockObjectResponse[]): Promise<st
       const content = quote.rich_text
         .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
         .join("");
-      markdown += `> ${content}\n\n`;
+      markdown += `> ${cleanExtraSpaces(content)}\n\n`;
     } else if (block.type === "code") {
       const code = (block as any).code;
       const language = code.language || "text";
@@ -158,7 +165,7 @@ async function notionBlocksToMarkdown(blocks: BlockObjectResponse[]): Promise<st
           if ((row as any).type === "table_row") {
             const cells = (row as any).table_row?.cells || [];
             const normalizedCells = cells.map((cell: any[]) => 
-              cell.map((text: any) => convertAnnotations(text.plain_text, text.annotations)).join("")
+              cleanExtraSpaces(cell.map((text: any) => convertAnnotations(text.plain_text, text.annotations)).join(""))
             );
             markdown += "| " + normalizedCells.join(" | ") + " |\n";
           }
