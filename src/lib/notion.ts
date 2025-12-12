@@ -279,45 +279,30 @@ export async function getPost(slug: string): Promise<Post | null> {
   return post || null;
 }
 
-/* 🔧 Fonction ajoutée : permet d'extraire une image depuis une propriété Notion de type "files"
-   (ce qui est le cas lorsque tu utilises "media" au lieu de "url")
-*/
+/* Extract media URL from Notion file property
+   Supports both external URLs and uploaded files */
 function extractMediaUrl(prop: any): string | undefined {
-  if (!prop || !prop.files || prop.files.length === 0) return undefined;
+  if (!prop?.files || prop.files.length === 0) return undefined;
 
   const file = prop.files[0];
-
-  // 🔹 Cas d'une image externe
-  if (file.type === "external") {
-    return file.external.url;
-  }
-
-  // 🔹 Cas d'une image envoyée dans Notion (URL signée qui expire)
-  if (file.type === "file") {
-    return file.file.url;
-  }
-
+  if (file.type === "external") return file.external.url;
+  if (file.type === "file") return file.file.url;
+  
   return undefined;
 }
 
 export async function getPostFromNotion(pageId: string): Promise<Post | null> {
   try {
-    const page = (await notion.pages.retrieve({
-      page_id: pageId,
-    })) as PageObjectResponse;
+    const page = (await notion.pages.retrieve({ page_id: pageId })) as PageObjectResponse;
     
-    // 🎨 Utiliser la conversion personnalisée qui préserve les couleurs
-    const blocks = await notion.blocks.children.list({
-      block_id: pageId,
-    });
+    const blocks = await notion.blocks.children.list({ block_id: pageId });
     const contentString = await notionBlocksToMarkdown(blocks.results as BlockObjectResponse[]);
 
     const paragraphs = contentString
       .split("\n")
       .filter((line: string) => line.trim().length > 0);
     const firstParagraph = paragraphs[0] || "";
-    const description =
-      firstParagraph.slice(0, 160) + (firstParagraph.length > 160 ? "..." : "");
+    const description = firstParagraph.slice(0, 160) + (firstParagraph.length > 160 ? "..." : "");
 
     const properties = page.properties as any;
     const rawTitle = properties.Title.title[0]?.plain_text || "Untitled";
@@ -335,16 +320,9 @@ export async function getPostFromNotion(pageId: string): Promise<Post | null> {
       id: page.id,
       title: rawTitle,
       slug: slugified || "untitled",
-
-      /* 🛠️ MODIFIÉ :
-         Avant → properties["Featured Image"]?.url
-         Maintenant → supporte une propriété Notion de type "Media" (files)
-      */
       coverImage: extractMediaUrl(properties["Featured Image"]),
-
       description,
-      date:
-        properties["Published Date"]?.date?.start || new Date().toISOString(),
+      date: properties["Published Date"]?.date?.start || new Date().toISOString(),
       content: contentString,
       author: properties.Author?.people[0]?.name,
       tags: properties.Tags?.multi_select?.map((tag: any) => tag.name) || [],
@@ -353,7 +331,7 @@ export async function getPostFromNotion(pageId: string): Promise<Post | null> {
 
     return post;
   } catch (error) {
-    console.error("Error getting post:", error);
+    console.error("Error getting post from Notion:", error);
     return null;
   }
 }
