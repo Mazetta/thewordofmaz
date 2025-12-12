@@ -7,7 +7,7 @@ import path from "path";
 export const notion = new Client({ auth: process.env.NOTION_TOKEN });
 export const n2m = new NotionToMarkdown({ notionClient: notion });
 
-// Type pour les annotations
+// Types
 interface NotionAnnotations {
   bold?: boolean;
   italic?: boolean;
@@ -17,21 +17,58 @@ interface NotionAnnotations {
   color?: string;
 }
 
-// 🎨 Mappage des couleurs Notion vers des couleurs CSS
-const NOTION_COLOR_MAP: { [key: string]: { name: string; hex: string } } = {
-  "default": { name: "default", hex: "inherit" },
-  "gray": { name: "gray", hex: "#626264" },
-  "brown": { name: "brown", hex: "#744210" },
-  "orange": { name: "orange", hex: "#d9730d" },
-  "yellow": { name: "yellow", hex: "#dfa000" },
-  "green": { name: "green", hex: "#33a852" },
-  "blue": { name: "blue", hex: "#0b6e99" },
-  "purple": { name: "purple", hex: "#6940a5" },
-  "pink": { name: "pink", hex: "#d946ef" },
-  "red": { name: "red", hex: "#d20c0c" },
+interface ColorMapping {
+  name: string;
+  hex: string;
+}
+
+interface RichTextElement {
+  plain_text: string;
+  annotations: NotionAnnotations;
+}
+
+interface NotionBlock {
+  type: string;
+  has_children?: boolean;
+  id: string;
+  paragraph?: { rich_text: RichTextElement[] };
+  heading_1?: { rich_text: RichTextElement[] };
+  heading_2?: { rich_text: RichTextElement[] };
+  heading_3?: { rich_text: RichTextElement[] };
+  bulleted_list_item?: { rich_text: RichTextElement[] };
+  numbered_list_item?: { rich_text: RichTextElement[] };
+  quote?: { rich_text: RichTextElement[] };
+  code?: { rich_text: RichTextElement[]; language: string };
+  image?: { type: string; external?: { url: string }; file?: { url: string } };
+  table_row?: { cells: RichTextElement[][] };
+}
+
+// Color mapping
+const NOTION_COLOR_MAP: Record<string, ColorMapping> = {
+  default: { name: "default", hex: "inherit" },
+  gray: { name: "gray", hex: "#626264" },
+  brown: { name: "brown", hex: "#744210" },
+  orange: { name: "orange", hex: "#d9730d" },
+  yellow: { name: "yellow", hex: "#dfa000" },
+  green: { name: "green", hex: "#33a852" },
+  blue: { name: "blue", hex: "#0b6e99" },
+  purple: { name: "purple", hex: "#6940a5" },
+  pink: { name: "pink", hex: "#d946ef" },
+  red: { name: "red", hex: "#d20c0c" },
 };
 
-// 🎨 Extraire les informations de couleur de fond
+function extractColorName(color?: string): string | null {
+  if (!color || color === "default") return null;
+  return color.replace("_background", "");
+}
+
+function getTextColor(color?: string): string | null {
+  const colorName = extractColorName(color);
+  if (!colorName) return null;
+  const colorInfo = NOTION_COLOR_MAP[colorName];
+  return colorInfo && colorInfo.hex !== "inherit" ? colorInfo.hex : null;
+}
+
 function getBackgroundColor(color?: string): string | null {
   if (!color || !color.includes("_background")) return null;
   const colorName = color.replace("_background", "");
@@ -39,162 +76,131 @@ function getBackgroundColor(color?: string): string | null {
   return colorInfo ? colorInfo.hex : null;
 }
 
-// 🎨 Extraire les informations de couleur de texte
-function getTextColor(color?: string): string | null {
-  if (!color || color === "default") return null;
-  
-  // Si c'est un background, utiliser la couleur du background pour le texte
-  // (Notion remplace la couleur du texte par la couleur du surlignage)
-  const colorName = color.replace("_background", "");
-  const colorInfo = NOTION_COLOR_MAP[colorName];
-  return (colorInfo && colorInfo.hex !== "inherit") ? colorInfo.hex : null;
+function convertRichText(richTexts: RichTextElement[]): string {
+  return richTexts
+    .map(text => convertAnnotations(text.plain_text, text.annotations))
+    .join("");
 }
 
-// 🎨 Conversion des annotations Notion en HTML
 function convertAnnotations(text: string, annotations: NotionAnnotations): string {
   let html = text;
   
-  // 1️⃣ Appliquer TOUS les formatages (sans couleur)
-  if (annotations?.bold) {
-    html = `<strong>${html}</strong>`;
-  }
-  if (annotations?.italic) {
-    html = `<em>${html}</em>`;
-  }
-  if (annotations?.strikethrough) {
-    html = `<del>${html}</del>`;
-  }
-  if (annotations?.underline) {
-    html = `<u>${html}</u>`;
-  }
+  // Apply formatting (without color)
+  if (annotations?.bold) html = `<strong>${html}</strong>`;
+  if (annotations?.italic) html = `<em>${html}</em>`;
+  if (annotations?.strikethrough) html = `<del>${html}</del>`;
+  if (annotations?.underline) html = `<u>${html}</u>`;
   if (annotations?.code) {
     html = `<code class="bg-gray-200 dark:bg-gray-800 px-1 rounded">${html}</code>`;
   }
   
-  // 2️⃣ Appliquer la couleur de texte
+  // Apply text color
   const textColor = getTextColor(annotations?.color);
   if (textColor) {
     html = `<span style="color: ${textColor}">${html}</span>`;
   }
   
-  // 3️⃣ Appliquer la couleur de fond EN DERNIER
+  // Apply background color
   const bgColor = getBackgroundColor(annotations?.color);
   if (bgColor) {
-    // Appliquer juste le background, pas la couleur de texte
     html = `<span style="background-color: ${bgColor}20; padding: 2px 4px; border-radius: 3px;">${html}</span>`;
   }
   
   return html;
 }
 
-// 📝 Conversion personnalisée des blocs Notion en Markdown avec support des couleurs
+async function processChildBlocks(blockId: string): Promise<string> {
+  const children = await notion.blocks.children.list({ block_id: blockId });
+  const childMarkdown = await notionBlocksToMarkdown(children.results as BlockObjectResponse[]);
+  return childMarkdown
+    .split("\n")
+    .map(line => line ? `  ${line}` : line)
+    .join("\n");
+}
+
 async function notionBlocksToMarkdown(blocks: BlockObjectResponse[]): Promise<string> {
   let markdown = "";
   
-  for (const block of blocks) {
-    // Traiter les blocs
-    if (block.type === "paragraph") {
-      const paragraph = (block as any).paragraph;
-      const content = paragraph.rich_text
-        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
-        .join("");
-      markdown += content ? `${content}\n\n` : "\n";
-    } else if (block.type === "heading_1") {
-      const heading = (block as any).heading_1;
-      const content = heading.rich_text
-        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
-        .join("");
-      markdown += `# ${content}\n\n`;
-    } else if (block.type === "heading_2") {
-      const heading = (block as any).heading_2;
-      const content = heading.rich_text
-        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
-        .join("");
-      markdown += `## ${content}\n\n`;
-    } else if (block.type === "heading_3") {
-      const heading = (block as any).heading_3;
-      const content = heading.rich_text
-        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
-        .join("");
-      markdown += `### ${content}\n\n`;
-    } else if (block.type === "bulleted_list_item") {
-      const item = (block as any).bulleted_list_item;
-      const content = item.rich_text
-        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
-        .join("");
-      markdown += `- ${content}\n`;
+  for (const block of blocks as NotionBlock[]) {
+    switch (block.type) {
+      case "paragraph": {
+        const content = convertRichText(block.paragraph?.rich_text || []);
+        markdown += content ? `${content}\n\n` : "\n";
+        break;
+      }
       
-      // Gérer les enfants
-      if (block.has_children) {
-        const children = await notion.blocks.children.list({ block_id: block.id });
-        const childMarkdown = await notionBlocksToMarkdown(children.results as BlockObjectResponse[]);
-        const indented = childMarkdown
-          .split("\n")
-          .map(line => line ? `  ${line}` : line)
-          .join("\n");
-        markdown += indented;
+      case "heading_1":
+      case "heading_2":
+      case "heading_3": {
+        const level = parseInt(block.type.split("_")[1]);
+        const content = convertRichText((block as any)[block.type]?.rich_text || []);
+        markdown += `${"#".repeat(level)} ${content}\n\n`;
+        break;
       }
-    } else if (block.type === "numbered_list_item") {
-      const item = (block as any).numbered_list_item;
-      const content = item.rich_text
-        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
-        .join("");
-      markdown += `1. ${content}\n`;
       
-      // Gérer les enfants
-      if (block.has_children) {
-        const children = await notion.blocks.children.list({ block_id: block.id });
-        const childMarkdown = await notionBlocksToMarkdown(children.results as BlockObjectResponse[]);
-        const indented = childMarkdown
-          .split("\n")
-          .map(line => line ? `  ${line}` : line)
-          .join("\n");
-        markdown += indented;
-      }
-    } else if (block.type === "quote") {
-      const quote = (block as any).quote;
-      const content = quote.rich_text
-        .map((text: any) => convertAnnotations(text.plain_text, text.annotations))
-        .join("");
-      markdown += `> ${content}\n\n`;
-    } else if (block.type === "code") {
-      const code = (block as any).code;
-      const language = code.language || "text";
-      const content = code.rich_text
-        .map((text: any) => text.plain_text)
-        .join("");
-      markdown += `\`\`\`${language}\n${content}\n\`\`\`\n\n`;
-    } else if (block.type === "image") {
-      const image = (block as any).image;
-      let imageUrl = "";
-      if (image.type === "external") {
-        imageUrl = image.external.url;
-      } else if (image.type === "file") {
-        imageUrl = image.file.url;
-      }
-      if (imageUrl) {
-        markdown += `![](${imageUrl})\n\n`;
-      }
-    } else if (block.type === "divider") {
-      markdown += `---\n\n`;
-    } else if (block.type === "table_of_contents") {
-      // Ignorer la table des matières
-      continue;
-    } else if (block.type === "table") {
-      // Gérer les tableaux simples
-      if (block.has_children) {
-        const rows = await notion.blocks.children.list({ block_id: block.id });
-        for (const row of rows.results) {
-          if ((row as any).type === "table_row") {
-            const cells = (row as any).table_row?.cells || [];
-            const normalizedCells = cells.map((cell: any[]) => 
-              cell.map((text: any) => convertAnnotations(text.plain_text, text.annotations)).join("")
-            );
-            markdown += "| " + normalizedCells.join(" | ") + " |\n";
-          }
+      case "bulleted_list_item":
+      case "numbered_list_item": {
+        const prefix = block.type === "bulleted_list_item" ? "- " : "1. ";
+        const content = convertRichText((block as any)[block.type]?.rich_text || []);
+        markdown += `${prefix}${content}\n`;
+        
+        if (block.has_children) {
+          markdown += await processChildBlocks(block.id);
         }
-        markdown += "\n";
+        break;
       }
+      
+      case "quote": {
+        const content = convertRichText(block.quote?.rich_text || []);
+        markdown += `> ${content}\n\n`;
+        break;
+      }
+      
+      case "code": {
+        const language = block.code?.language || "text";
+        const content = block.code?.rich_text.map(t => t.plain_text).join("") || "";
+        markdown += `\`\`\`${language}\n${content}\n\`\`\`\n\n`;
+        break;
+      }
+      
+      case "image": {
+        const image = block.image;
+        let imageUrl = "";
+        if (image?.type === "external") {
+          imageUrl = image.external?.url || "";
+        } else if (image?.type === "file") {
+          imageUrl = image.file?.url || "";
+        }
+        if (imageUrl) markdown += `![](${imageUrl})\n\n`;
+        break;
+      }
+      
+      case "divider": {
+        markdown += `---\n\n`;
+        break;
+      }
+      
+      case "table": {
+        if (block.has_children) {
+          const rows = await notion.blocks.children.list({ block_id: block.id });
+          for (const row of rows.results) {
+            const tableRow = row as any;
+            if (tableRow.type === "table_row") {
+              const cells = tableRow.table_row?.cells || [];
+              const normalizedCells = cells.map((cell: RichTextElement[]) =>
+                cell.map(text => convertAnnotations(text.plain_text, text.annotations)).join("")
+              );
+              markdown += "| " + normalizedCells.join(" | ") + " |\n";
+            }
+          }
+          markdown += "\n";
+        }
+        break;
+      }
+      
+      case "table_of_contents":
+        // Skip table of contents
+        break;
     }
   }
   
