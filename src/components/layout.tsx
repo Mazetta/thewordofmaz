@@ -30,14 +30,14 @@ export default function Layout({ children }: LayoutProps) {
       </header>
 
       {/* ⬇️ Nouveau wrapper pour que flex-1 prenne toute la hauteur disponible */}
-      <div className="flex-1">
+      <div className="flex-1 main-bg">
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {children}
         </main>
       </div>
 
       {/* Footer collé en bas grâce à mt-auto */}
-      <footer className="bg-zinc-900 dark:bg-zinc-950 border-t mt-auto">
+      <footer className="border-t mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center flex flex-col items-center justify-center min-h-32">
           <SocialLinks />
         </div>

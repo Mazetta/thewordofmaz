@@ -126,3 +126,10 @@
 strong, em, del, u, code {
   color: inherit;
 }
+/* 📸 Partie centrale avec image de fond */
+.main-bg {
+  background-image: url('/banners/your-image.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
