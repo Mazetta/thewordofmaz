@@ -43,7 +43,8 @@ function getBackgroundColor(color?: string): string | null {
 function getTextColor(color?: string): string | null {
   if (!color || color === "default") return null;
   
-  // Gérer les backgrounds: "red_background" -> extraire "red" pour la couleur du texte
+  // Si c'est un background, utiliser la couleur du background pour le texte
+  // (Notion remplace la couleur du texte par la couleur du surlignage)
   const colorName = color.replace("_background", "");
   const colorInfo = NOTION_COLOR_MAP[colorName];
   return (colorInfo && colorInfo.hex !== "inherit") ? colorInfo.hex : null;
