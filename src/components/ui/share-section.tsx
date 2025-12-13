@@ -94,7 +94,7 @@ export default function ShareSection({ title, url }: ShareSectionProps) {
       {/* copy */}
       <button
         onClick={copyToClipboard}
-        className="rounded-full bg-white/10 hover:bg-white/20 transition p-1.5 flex items-center justify-center cursor-pointer"
+        className="rounded-full bg-white/10 transition p-1.5 flex items-center justify-center cursor-pointer"
       >
         {/* copy -> check */}
         <div className="transition-opacity duration-200">
