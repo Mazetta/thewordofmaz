@@ -173,7 +173,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
         <ShareSection title={post.title} url={`${siteUrl}/posts/${post.slug}`} />
 
-        <div className="max-w-none mb-16">
+        <div className="max-w-none mb-8">
           <ReactMarkdown
             components={components}
             remarkPlugins={[remarkGfm]}
