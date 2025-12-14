@@ -22,7 +22,7 @@ export default function Layout({ children }: LayoutProps) {
                   href="/"
                   className="flex items-center text-lg font-bold text-foreground"
                 >
-                  🍄
+                  🍄 The Word of Maz
                 </Link>
                 <ModeToggle />
               </div>
