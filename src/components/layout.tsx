@@ -14,8 +14,8 @@ export default function Layout({ children }: LayoutProps) {
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b">
         <nav className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto flex justify-between items-center h-16 gap-4">
-            <div className="flex">
+          <div className="max-w-7xl mx-auto flex items-center h-16 gap-4">
+            <div className="flex-1 flex">
               <Link
                 href="/"
                 className="flex items-center text-xl font-bold text-foreground whitespace-nowrap"
@@ -23,10 +23,12 @@ export default function Layout({ children }: LayoutProps) {
                 🍄 The Word of Maz
               </Link>
             </div>
-            <div className="flex-1 max-w-md">
-              <SearchBar />
+            <div className="flex-1 flex justify-center px-4">
+              <div className="w-full max-w-md">
+                <SearchBar />
+              </div>
             </div>
-            <div className="flex items-center">
+            <div className="flex-1 flex justify-end">
               <ModeToggle />
             </div>
           </div>
