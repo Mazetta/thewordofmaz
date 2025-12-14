@@ -8,10 +8,10 @@ export default async function Home() {
     <div>
       <div className="max-w-2xl mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
-          Salut
+          The Word of Maz
         </h1>
         <p className="text-lg text-muted-foreground">
-          Tout ce qui me passe par la tête est ici.
+          Je poste (presque) tous les jours 
         </p>
       </div>
     
