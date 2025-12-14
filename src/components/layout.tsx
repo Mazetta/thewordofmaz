@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { SocialLinks } from "@/components/social-links";
+import SearchBar from "@/components/search-bar";
 
 interface LayoutProps {
   children: ReactNode;
@@ -13,7 +14,7 @@ export default function Layout({ children }: LayoutProps) {
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
+          <div className="flex justify-between items-center h-16">
             <div className="flex">
               <Link
                 href="/"
@@ -21,6 +22,9 @@ export default function Layout({ children }: LayoutProps) {
               >
                 🍄 The Word of Maz
               </Link>
+            </div>
+            <div className="flex-1 mx-8 max-w-xs">
+              <SearchBar />
             </div>
             <div className="flex items-center">
               <ModeToggle />
