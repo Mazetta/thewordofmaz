@@ -13,17 +13,17 @@ export default function Layout({ children }: LayoutProps) {
     // Ajout du flex + flex-col pour le layout vertical
     <div className="min-h-screen bg-background flex flex-col">
       <header className="border-b">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+        <nav className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto flex justify-between items-center h-16 gap-4">
             <div className="flex">
               <Link
                 href="/"
-                className="flex items-center text-xl font-bold text-foreground"
+                className="flex items-center text-xl font-bold text-foreground whitespace-nowrap"
               >
                 🍄 The Word of Maz
               </Link>
             </div>
-            <div className="flex-1 mx-8 max-w-xs">
+            <div className="flex-1 max-w-md">
               <SearchBar />
             </div>
             <div className="flex items-center">
