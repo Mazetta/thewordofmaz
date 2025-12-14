@@ -21,11 +21,11 @@ async function SearchResults({ query }: { query: string }) {
 
   if (filteredPosts.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-2xl font-bold text-foreground mb-4">
+      <div className="max-w-2xl mx-auto text-center mb-12">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
           Aucun résultat pour "{query}"
-        </h2>
-        <p className="text-muted-foreground">
+        </h1>
+        <p className="text-lg text-muted-foreground">
           Essayez une autre recherche ou explorez tous les posts.
         </p>
       </div>
@@ -34,15 +34,13 @@ async function SearchResults({ query }: { query: string }) {
 
   return (
     <div>
-      <div className="w-full text-center mb-12">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-2">
-            Résultats de recherche
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            {filteredPosts.length} résultat{filteredPosts.length > 1 ? 's' : ''} pour "{query}"
-          </p>
-        </div>
+      <div className="max-w-2xl mx-auto text-center mb-12">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
+          Résultats de recherche
+        </h1>
+        <p className="text-lg text-muted-foreground">
+          {filteredPosts.length} résultat{filteredPosts.length > 1 ? 's' : ''} pour "{query}"
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -67,7 +65,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       ) : (
         <div className="max-w-2xl mx-auto text-center">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
-            Recherche
+            Recherche mb-12
           </h1>
           <p className="text-lg text-muted-foreground">
             Entrez une recherche pour commencer.
