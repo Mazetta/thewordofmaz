@@ -15,18 +15,20 @@ export default function Layout({ children }: LayoutProps) {
       <header className="border-b">
         <nav className="w-full px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
-            {/* Mobile: Affichage empilé */}
-            <div className="flex md:hidden items-center justify-between h-16 gap-2">
-              <Link
-                href="/"
-                className="flex items-center text-lg font-bold text-foreground whitespace-nowrap"
-              >
-                🍄
-              </Link>
-              <div className="flex-1 mx-2">
+            {/* Mobile: Barre de recherche centrée */}
+            <div className="flex md:hidden flex-col gap-3 py-3">
+              <div className="flex items-center justify-between px-2">
+                <Link
+                  href="/"
+                  className="flex items-center text-lg font-bold text-foreground"
+                >
+                  🍄
+                </Link>
+                <ModeToggle />
+              </div>
+              <div className="px-2">
                 <SearchBar />
               </div>
-              <ModeToggle />
             </div>
             
             {/* Desktop: 3 colonnes */}
