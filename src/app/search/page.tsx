@@ -23,7 +23,7 @@ async function SearchResults({ query }: { query: string }) {
     return (
       <div className="max-w-2xl mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
-          Aucun résultat pour "{query}"
+          Aucun résultat
         </h1>
         <p className="text-lg text-muted-foreground">
           Essayez une autre recherche ou explorez tous les posts.
