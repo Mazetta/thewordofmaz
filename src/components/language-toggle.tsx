@@ -42,6 +42,11 @@ export function LanguageToggle() {
   }, [pathname]);
 
   const handleLocaleChange = async (newLocale: 'fr' | 'en') => {
+    // Si on clique sur la même langue, ne rien faire
+    if (newLocale === locale) {
+      return;
+    }
+
     setLocale(newLocale);
     setIsLoading(true);
 
