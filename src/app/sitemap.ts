@@ -1,4 +1,5 @@
-import { getPostsFromCache, Post } from "@/lib/notion";
+import { getPostsFromCache } from "@/lib/notion";
+import { Post } from "@/lib/post.types";
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -6,7 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const posts = getPostsFromCache();
   const postUrls = posts.map((post: Post) => ({
-    url: `${siteUrl}/posts/${post.slug}`,
+    url: `${siteUrl}/posts/${post.locale}/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: "weekly" as const,
     priority: 0.8,

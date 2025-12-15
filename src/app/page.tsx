@@ -1,5 +1,6 @@
 import { getAllPosts } from "@/lib/notion";
 import PostCard from "@/components/post-card";
+import { PostsGrid } from "@/components/posts-grid";
 
 export default async function Home() {
   const posts = await getAllPosts();
@@ -15,11 +16,7 @@ export default async function Home() {
         </p>
       </div>
     
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {posts.map((post) => (
-          <PostCard key={post.id} post={post} />
-        ))}
-      </div>
+      <PostsGrid posts={posts} />
     </div>
   );
 }

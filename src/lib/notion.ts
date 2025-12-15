@@ -3,6 +3,7 @@ import { NotionToMarkdown } from "notion-to-md";
 import { PageObjectResponse, BlockObjectResponse } from "@notionhq/client/";
 import fs from "fs";
 import path from "path";
+import { Post } from "./post.types";
 
 export const notion = new Client({ auth: process.env.NOTION_TOKEN });
 export const n2m = new NotionToMarkdown({ notionClient: notion });
@@ -207,19 +208,6 @@ async function notionBlocksToMarkdown(blocks: BlockObjectResponse[]): Promise<st
   return markdown;
 }
 
-export interface Post {
-  id: string;
-  title: string;
-  slug: string;
-  coverImage?: string;
-  description: string;
-  date: string;
-  content: string;
-  author?: string;
-  tags?: string[];
-  category?: string;
-}
-
 export async function getDatabaseStructure() {
   const database = await notion.databases.retrieve({
     database_id: process.env.NOTION_DATABASE_ID!,
@@ -327,6 +315,7 @@ export async function getPostFromNotion(pageId: string): Promise<Post | null> {
       author: properties.Author?.people[0]?.name,
       tags: properties.Tags?.multi_select?.map((tag: any) => tag.name) || [],
       category: properties.Category?.select?.name,
+      locale: properties.Locale?.select?.name || "fr",
     };
 
     return post;
@@ -348,6 +337,22 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     return null;
   } catch (error) {
     console.error("Error getting post by slug:", error);
+    return null;
+  }
+}
+
+export async function getPostBySlugAndLocale(slug: string, locale: "fr" | "en"): Promise<Post | null> {
+  try {
+    const rawPosts = await fetchPublishedPosts();
+    for (const page of rawPosts) {
+      const post = await getPostFromNotion(page.id);
+      if (post?.slug === slug && post?.locale === locale) {
+        return post;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error("Error getting post by slug and locale:", error);
     return null;
   }
 }

@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
-import { Post, getWordCount } from "@/lib/notion";
+import { fr, enUS } from "date-fns/locale";
+import { Post } from "@/lib/post.types";
 import { Badge } from "@/components/ui/badge";
-import { calculateReadingTime } from "@/lib/utils";
+import { calculateReadingTime, getWordCount } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -15,16 +15,18 @@ import { Clock, Calendar, ArrowUpRight } from "lucide-react";
 
 interface PostCardProps {
   post: Post;
+  locale?: "fr" | "en";
 }
 
-export default function PostCard({ post }: PostCardProps) {
+export default function PostCard({ post, locale = "fr" }: PostCardProps) {
   const wordCount = post.content ? getWordCount(post.content) : 0;
   const readingTime = calculateReadingTime(wordCount);
+  const dateLocale = locale === "fr" ? fr : enUS;
 
   return (
     <Card className="group relative pt-0 overflow-hidden hover:shadow-xl transition-all duration-300 bg-card/50 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Link
-        href={`/posts/${post.slug}`}
+        href={`/posts/${post.locale}/${post.slug}`}
         className="absolute inset-0 z-10"
         aria-label={post.title}
       />
@@ -54,7 +56,7 @@ export default function PostCard({ post }: PostCardProps) {
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <Calendar className="h-4 w-4" />
-            <span>{format(new Date(post.date), "dd MMM yyyy", { locale: fr })}</span>
+            <span>{format(new Date(post.date), "dd MMM yyyy", { locale: dateLocale })}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4" />
@@ -71,7 +73,7 @@ export default function PostCard({ post }: PostCardProps) {
       </CardHeader>
       <CardContent>
         {post.author && (
-          <p className="text-sm text-muted-foreground">Par {post.author}</p>
+          <p className="text-sm text-muted-foreground">{locale === "fr" ? "Par" : "By"} {post.author}</p>
         )}
       </CardContent>
       {post.tags && post.tags.length > 0 && (

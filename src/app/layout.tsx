@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Layout from "@/components/layout";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LocaleProvider } from "@/lib/locale-context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -74,7 +75,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Layout>{children}</Layout>
+          <LocaleProvider>
+            <Layout>{children}</Layout>
+          </LocaleProvider>
         </ThemeProvider>
       </body>
     </html>

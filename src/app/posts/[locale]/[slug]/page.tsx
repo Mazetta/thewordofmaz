@@ -1,4 +1,4 @@
-import { getAllPosts, getPostBySlug, getWordCount } from "@/lib/notion";
+import { getAllPosts, getPostBySlugAndLocale, getWordCount } from "@/lib/notion";
 import { format } from "date-fns";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -10,19 +10,19 @@ import { calculateReadingTime } from "@/lib/utils";
 import { components } from "@/components/mdx-component";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import { fr } from "date-fns/locale";
+import { fr, enUS } from "date-fns/locale";
 import ShareSection from "@/components/ui/share-section";
 import GiscusComments from "@/components/giscus-comments";
 import NavButtons from "@/components/nav-buttons";
 
 interface PostPageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: "fr" | "en"; slug: string }>;
 }
 
 export async function generateStaticParams() {
   try {
     const posts = await getAllPosts();
-    return posts.map((post) => ({ slug: post.slug }));
+    return posts.map((post) => ({ locale: post.locale, slug: post.slug }));
   } catch (error) {
     console.error("Error generating static params:", error);
     return [];
@@ -33,12 +33,12 @@ export async function generateMetadata(
   { params }: PostPageProps,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const { slug, locale } = await params;
+  const post = await getPostBySlugAndLocale(slug, locale);
 
   if (!post) {
     return {
-      title: "Erreur 404, Post Introuvable",
+      title: locale === "fr" ? "Erreur 404, Post Introuvable" : "Error 404, Post Not Found",
     };
   }
 
@@ -48,13 +48,13 @@ export async function generateMetadata(
     title: post.title,
     description: post.description,
     alternates: {
-      canonical: `${siteUrl}/posts/${post.slug}`,
+      canonical: `${siteUrl}/posts/${locale}/${post.slug}`,
     },
     openGraph: {
       title: post.title,
       description: post.description,
       type: "article",
-      url: `${siteUrl}/posts/${post.slug}`,
+      url: `${siteUrl}/posts/${locale}/${post.slug}`,
       publishedTime: new Date(post.date).toISOString(),
       authors: post.author ? [post.author] : [],
       tags: post.tags,
@@ -82,8 +82,8 @@ export async function generateMetadata(
 }
 
 export default async function PostPage({ params }: PostPageProps) {
-  const { slug } = await params;
-  const post = await getPostBySlug(slug);
+  const { slug, locale } = await params;
+  const post = await getPostBySlugAndLocale(slug, locale);
   const allPosts = await getAllPosts();
   const wordCount = post?.content ? getWordCount(post.content) : 0;
 
@@ -92,6 +92,7 @@ export default async function PostPage({ params }: PostPageProps) {
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.mazeriio.net/";
+  const dateLocale = locale === "fr" ? fr : enUS;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -114,7 +115,7 @@ export default async function PostPage({ params }: PostPageProps) {
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${siteUrl}/posts/${post.slug}`,
+      "@id": `${siteUrl}/posts/${locale}/${post.slug}`,
     },
   };
 
@@ -128,10 +129,10 @@ export default async function PostPage({ params }: PostPageProps) {
 
         <header className="mb-8">
           <div className="flex items-center gap-4 text-muted-foreground mb-4">
-            <time>{format(new Date(post.date), "dd MMMM yyyy", { locale: fr })}</time>
-            {post.author && <span>Par {post.author}</span>}
+            <time>{format(new Date(post.date), "dd MMMM yyyy", { locale: dateLocale })}</time>
+            {post.author && <span>{locale === "fr" ? "Par" : "By"} {post.author}</span>}
             <span>{calculateReadingTime(wordCount)}</span>
-            <span>{wordCount} {wordCount === 1 ? 'mot' : 'mots'}</span>
+            <span>{wordCount} {wordCount === 1 ? (locale === "fr" ? "mot" : "word") : (locale === "fr" ? "mots" : "words")}</span>
           </div>
 
           <h1 className="text-4xl font-bold mb-4 text-foreground">
@@ -143,7 +144,6 @@ export default async function PostPage({ params }: PostPageProps) {
               className="
                 relative not-prose w-full mb-4 overflow-hidden rounded-2xl
                 aspect-[5/2] 
-                /* CHANGEMENT : ratio 5/2 = bannière optimisée 1600x640 */
               "
             >
               <Image
@@ -152,7 +152,6 @@ export default async function PostPage({ params }: PostPageProps) {
                 fill
                 className="object-cover"
                 sizes="100vw"
-                /* CHANGEMENT : sizes=100vw = toujours charger la bonne taille pour la largeur réelle */
                 priority
               />
             </div>
@@ -171,7 +170,7 @@ export default async function PostPage({ params }: PostPageProps) {
           </div>
         </header>
 
-        <ShareSection title={post.title} url={`${siteUrl}/posts/${post.slug}`} />
+        <ShareSection title={post.title} url={`${siteUrl}/posts/${locale}/${post.slug}`} />
 
         <div className="max-w-none mb-8">
           <ReactMarkdown
@@ -185,7 +184,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
         <NavButtons 
           currentSlug={post.slug} 
-          allPosts={allPosts.map(p => ({ slug: p.slug, title: p.title }))} 
+          allPosts={allPosts.filter(p => p.locale === locale).map(p => ({ slug: p.slug, title: p.title }))} 
         />
 
         <GiscusComments/>

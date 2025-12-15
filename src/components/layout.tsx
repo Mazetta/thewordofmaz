@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 import { ModeToggle } from "@/components/mode-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
 import { SocialLinks } from "@/components/social-links";
 import SearchBar from "@/components/search-bar";
 
@@ -24,7 +25,10 @@ export default function Layout({ children }: LayoutProps) {
                 >
                   🍄 The Word of Maz
                 </Link>
-                <ModeToggle />
+                <div className="flex gap-2">
+                  <LanguageToggle />
+                  <ModeToggle />
+                </div>
               </div>
               <div className="px-2">
                 <SearchBar />
@@ -46,7 +50,8 @@ export default function Layout({ children }: LayoutProps) {
                   <SearchBar />
                 </div>
               </div>
-              <div className="flex-1 flex justify-end">
+              <div className="flex-1 flex justify-end gap-2">
+                <LanguageToggle />
                 <ModeToggle />
               </div>
             </div>
