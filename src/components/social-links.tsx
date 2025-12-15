@@ -4,9 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faXTwitter, faBluesky, faReddit, faYoutube } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope, faRss } from "@fortawesome/free-solid-svg-icons";
 import { useTranslations } from "@/lib/use-translations";
+import { useLocale } from "@/lib/locale-context";
 
 export function SocialLinks() {
   const { t } = useTranslations();
+  const { locale } = useLocale();
+
+  const rssLink = locale === 'en' ? '/rss-en.xml' : '/rss.xml';
 
   return (
     <div className="flex flex-col items-center gap-3">
@@ -29,7 +33,7 @@ export function SocialLinks() {
         <a href="mailto:contact@mazeriio.net" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Email">
           <FontAwesomeIcon icon={faEnvelope} size="lg" />
         </a>
-        <a href="https://www.mazeriio.net/rss.xml" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Email">
+        <a href={rssLink} className="text-muted-foreground hover:text-foreground transition-colors" aria-label="RSS Feed">
           <FontAwesomeIcon icon={faRss} size="lg" />
         </a>
       </div>
