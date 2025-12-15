@@ -37,6 +37,4 @@ export function SortButtons() {
       </Button>
     </div>
   );
-    </div>
-  );
 }
