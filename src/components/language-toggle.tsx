@@ -11,9 +11,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useRouter, usePathname } from 'next/navigation';
-import { useState } from 'react';
-import { fetchTranslatedPost } from '@/app/actions';
-import { useCurrentPost } from '@/lib/post-context';
+import { useState, useEffect } from 'react';
+import { fetchTranslatedPost, fetchCurrentPost } from '@/app/actions';
 
 export function LanguageToggle() {
   const { locale, setLocale } = useLocale();
@@ -22,7 +21,22 @@ export function LanguageToggle() {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
   const [isLoading, setIsLoading] = useState(false);
-  const currentPost = useCurrentPost();
+  const [translationId, setTranslationId] = useState<string | null>(null);
+
+  // Charger le translationId du post actuel si on est sur une page de post
+  useEffect(() => {
+    const segments = pathname.split('/').filter(Boolean);
+    if (segments[0] === 'posts' && (segments[1] === 'fr' || segments[1] === 'en') && segments[2]) {
+      const slug = segments[2];
+      const currentLocale = segments[1] as 'fr' | 'en';
+      
+      fetchCurrentPost(slug, currentLocale).then(post => {
+        if (post?.translationId) {
+          setTranslationId(post.translationId);
+        }
+      });
+    }
+  }, [pathname]);
 
   const handleLocaleChange = async (newLocale: 'fr' | 'en') => {
     setLocale(newLocale);
@@ -30,8 +44,8 @@ export function LanguageToggle() {
 
     try {
       // Si on est sur un post et qu'on a une traduction disponible
-      if (currentPost?.translationId) {
-        const translatedPost = await fetchTranslatedPost(currentPost.translationId, newLocale);
+      if (translationId) {
+        const translatedPost = await fetchTranslatedPost(translationId, newLocale);
         if (translatedPost) {
           router.push(`/posts/${newLocale}/${translatedPost.slug}`);
           setIsLoading(false);
