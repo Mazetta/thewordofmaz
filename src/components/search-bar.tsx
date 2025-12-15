@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { useTranslations } from '@/lib/use-translations';
 
 export default function SearchBar() {
   const [query, setQuery] = useState('');
+  const { t } = useTranslations();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +22,7 @@ export default function SearchBar() {
       <div className="relative">
         <Input
           type="text"
-          placeholder="Rechercher..."
+          placeholder={t('searchPlaceholder')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="w-full pl-9 pr-4 py-1.5 h-8 rounded-full border border-input bg-background text-base focus-visible:ring-0"

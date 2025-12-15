@@ -24,6 +24,9 @@ export const translations = {
     // Language & Theme
     changeLanguage: "Changer la langue",
     
+    // Loading
+    loading: "Chargement...",
+    
     // Errors
     error404: "Erreur 404, Post Introuvable",
   },
@@ -52,6 +55,9 @@ export const translations = {
     
     // Language & Theme
     changeLanguage: "Change language",
+    
+    // Loading
+    loading: "Loading...",
     
     // Errors
     error404: "Error 404, Post Not Found",

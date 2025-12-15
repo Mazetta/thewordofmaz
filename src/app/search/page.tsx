@@ -1,7 +1,8 @@
 import { getAllPosts } from "@/lib/notion";
 import { Suspense } from "react";
 import { SearchResults } from "@/components/search-results";
-import { translations } from "@/lib/translations";
+import { SearchFallback } from "@/components/search-fallback";
+import { SearchPrompt } from "@/components/search-prompt";
 
 interface SearchPageProps {
   searchParams: Promise<{ q?: string }>;
@@ -15,18 +16,11 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   return (
     <div>
       {query ? (
-        <Suspense fallback={<div>Chargement...</div>}>
+        <Suspense fallback={<SearchFallback />}>
           <SearchResults query={query} allPosts={allPosts} />
         </Suspense>
       ) : (
-        <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
-            {translations.fr.searchPlaceholder}
-          </h1>
-          <p className="text-lg text-muted-foreground">
-            {translations.fr.searchPrompt}
-          </p>
-        </div>
+        <SearchPrompt />
       )}
     </div>
   );

@@ -24,8 +24,11 @@ export function SearchResults({ query, allPosts }: SearchResultsProps) {
     const descriptionMatch = post.description.toLowerCase().includes(queryLower);
     const contentMatch = post.content.toLowerCase().includes(queryLower);
     const tagsMatch = post.tags?.some(tag => tag.toLowerCase().includes(queryLower));
+    const slugMatch = post.slug.toLowerCase().includes(queryLower);
+    // Aussi chercher dans l'URL complète du post
+    const urlMatch = `${post.locale}/${post.slug}`.toLowerCase().includes(queryLower);
     
-    return titleMatch || descriptionMatch || contentMatch || tagsMatch;
+    return titleMatch || descriptionMatch || contentMatch || tagsMatch || slugMatch || urlMatch;
   });
 
   if (filteredPosts.length === 0) {
