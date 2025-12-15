@@ -12,8 +12,8 @@ export default async function Home() {
       <HomeHeader />
       <Suspense fallback={<div className="h-10 mb-4" />}>
         <SortButtons />
+        <PostsGrid posts={posts} />
       </Suspense>
-      <PostsGrid posts={posts} />
     </div>
   );
 }

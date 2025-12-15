@@ -10,7 +10,7 @@ interface PostsGridProps {
   posts: Post[];
 }
 
-export function PostsGrid({ posts }: PostsGridProps) {
+function PostsGridContent({ posts }: PostsGridProps) {
   const { locale } = useLocale();
   const { t } = useTranslations();
   const searchParams = useSearchParams();
@@ -38,5 +38,11 @@ export function PostsGrid({ posts }: PostsGridProps) {
         </div>
       )}
     </div>
+  );
+}
+
+export function PostsGrid({ posts }: PostsGridProps) {
+  return <PostsGridContent posts={posts} />;
+}
   );
 }
