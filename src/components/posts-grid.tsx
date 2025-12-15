@@ -44,5 +44,3 @@ function PostsGridContent({ posts }: PostsGridProps) {
 export function PostsGrid({ posts }: PostsGridProps) {
   return <PostsGridContent posts={posts} />;
 }
-  );
-}
