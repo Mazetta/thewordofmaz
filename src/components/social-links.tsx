@@ -14,7 +14,7 @@ export function SocialLinks() {
         <a href="https://x.com/Mazeriio" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Discord">
           <FontAwesomeIcon icon={faXTwitter} size="lg" />
         </a>
-        <a href="https://bsky.app/profile/@mazeriio.net" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Discord">
+        <a href="https://bsky.app/profile/mazeriio.net" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Discord">
           <FontAwesomeIcon icon={faBluesky} size="lg" />
         </a>
         <a href="https://www.reddit.com/user/Mazeriio" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
