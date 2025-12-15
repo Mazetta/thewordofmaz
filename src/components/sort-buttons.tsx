@@ -23,6 +23,7 @@ export function SortButtons() {
         variant={currentSort === "newest" ? "default" : "outline"}
         size="sm"
         onClick={() => handleSort("newest")}
+        className="transition-all duration-200"
       >
         {t('sortNewest')}
       </Button>
@@ -30,9 +31,12 @@ export function SortButtons() {
         variant={currentSort === "oldest" ? "default" : "outline"}
         size="sm"
         onClick={() => handleSort("oldest")}
+        className="transition-all duration-200"
       >
         {t('sortOldest')}
       </Button>
+    </div>
+  );
     </div>
   );
 }
