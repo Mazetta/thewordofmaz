@@ -3,11 +3,11 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const posts = await getAllPosts();
-  const frenchPosts = posts.filter(post => post.locale === 'fr');
+  const englishPosts = posts.filter(post => post.locale === 'en');
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.mazeriio.net/";
 
-  const rssItems = frenchPosts
+  const rssItems = englishPosts
     .map((post) => `
       <item>
         <title>${post.title}</title>
@@ -22,9 +22,9 @@ export async function GET() {
   const rss = `<?xml version="1.0" encoding="UTF-8" ?>
     <rss version="2.0">
       <channel>
-        <title>The Word of Maz - Français</title>
+        <title>The Word of Maz - English</title>
         <link>${siteUrl}</link>
-        <description>Flux RSS du Word of Maz - Articles en Français</description>
+        <description>The Word of Maz RSS Feed - English Posts</description>
         ${rssItems}
       </channel>
     </rss>

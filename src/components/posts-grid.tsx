@@ -3,6 +3,7 @@
 import PostCard from "@/components/post-card";
 import { Post } from "@/lib/post.types";
 import { useLocale } from "@/lib/locale-context";
+import { useTranslations } from "@/lib/use-translations";
 
 interface PostsGridProps {
   posts: Post[];
@@ -10,6 +11,7 @@ interface PostsGridProps {
 
 export function PostsGrid({ posts }: PostsGridProps) {
   const { locale } = useLocale();
+  const { t } = useTranslations();
   
   const filteredPosts = posts.filter(post => post.locale === locale);
 
@@ -21,7 +23,7 @@ export function PostsGrid({ posts }: PostsGridProps) {
         ))
       ) : (
         <div className="col-span-full text-center py-12 text-muted-foreground">
-          <p>{locale === 'fr' ? 'Aucun article trouvé' : 'No posts found'}</p>
+          <p>{t('noPostsFound')}</p>
         </div>
       )}
     </div>

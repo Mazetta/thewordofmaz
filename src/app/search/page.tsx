@@ -1,7 +1,7 @@
 import { getAllPosts } from "@/lib/notion";
-import PostCard from "@/components/post-card";
 import { Suspense } from "react";
 import { SearchResults } from "@/components/search-results";
+import { translations } from "@/lib/translations";
 
 interface SearchPageProps {
   searchParams: Promise<{ q?: string }>;
@@ -21,10 +21,10 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       ) : (
         <div className="max-w-2xl mx-auto text-center">
           <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
-            Recherche
+            {translations.fr.searchPlaceholder}
           </h1>
           <p className="text-lg text-muted-foreground">
-            Entrez une recherche pour commencer.
+            {translations.fr.searchPrompt}
           </p>
         </div>
       )}

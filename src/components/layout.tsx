@@ -25,9 +25,9 @@ export default function Layout({ children }: LayoutProps) {
                 >
                   🍄 The Word of Maz
                 </Link>
-                <div className="flex gap-2">
-                  <LanguageToggle />
+                <div className="flex gap-1.5">
                   <ModeToggle />
+                  <LanguageToggle />
                 </div>
               </div>
               <div className="px-2">
@@ -50,9 +50,9 @@ export default function Layout({ children }: LayoutProps) {
                   <SearchBar />
                 </div>
               </div>
-              <div className="flex-1 flex justify-end gap-2">
-                <LanguageToggle />
+              <div className="flex-1 flex justify-end gap-2.5">
                 <ModeToggle />
+                <LanguageToggle />
               </div>
             </div>
           </div>

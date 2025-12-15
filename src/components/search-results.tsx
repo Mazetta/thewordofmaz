@@ -3,6 +3,7 @@
 import PostCard from "@/components/post-card";
 import { Post } from "@/lib/post.types";
 import { useLocale } from "@/lib/locale-context";
+import { useTranslations } from "@/lib/use-translations";
 
 interface SearchResultsProps {
   query: string;
@@ -11,6 +12,7 @@ interface SearchResultsProps {
 
 export function SearchResults({ query, allPosts }: SearchResultsProps) {
   const { locale } = useLocale();
+  const { t } = useTranslations();
   
   const queryLower = query.toLowerCase();
   const filteredPosts = allPosts.filter((post) => {
@@ -30,10 +32,10 @@ export function SearchResults({ query, allPosts }: SearchResultsProps) {
     return (
       <div className="max-w-2xl mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
-          {locale === 'fr' ? 'Aucun résultat' : 'No results'}
+          {t('searchNoResults')}
         </h1>
         <p className="text-lg text-muted-foreground">
-          {locale === 'fr' ? 'Essayez une autre recherche ou explorez tous les posts.' : 'Try another search or explore all posts.'}
+          {t('searchTryAnother')}
         </p>
       </div>
     );
@@ -43,12 +45,12 @@ export function SearchResults({ query, allPosts }: SearchResultsProps) {
     <div>
       <div className="max-w-2xl mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl mb-4">
-          {locale === 'fr' ? 'Résultats de recherche' : 'Search results'}
+          {t('searchResults')}
         </h1>
         <p className="text-lg text-muted-foreground">
-          {locale === 'fr' 
-            ? `${filteredPosts.length} résultat${filteredPosts.length > 1 ? 's' : ''} pour "${query}"`
-            : `${filteredPosts.length} result${filteredPosts.length > 1 ? 's' : ''} for "${query}"`
+          {typeof t('searchResultsFor') === 'function' 
+            ? (t('searchResultsFor') as any)(filteredPosts.length, query)
+            : `${filteredPosts.length} results for "${query}"`
           }
         </p>
       </div>
