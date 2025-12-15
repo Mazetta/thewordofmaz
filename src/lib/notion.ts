@@ -58,6 +58,18 @@ const NOTION_COLOR_MAP: Record<string, ColorMapping> = {
   red: { name: "red", hex: "#d20c0c" },
 };
 
+function mapLocaleFromNotion(notionLocale?: string): "fr" | "en" {
+  const localeMap: Record<string, "fr" | "en"> = {
+    "Français": "fr",
+    "French": "fr",
+    "fr": "fr",
+    "English": "en",
+    "en": "en",
+  };
+  
+  return localeMap[notionLocale || ""] || "fr";
+}
+
 function extractColorName(color?: string): string | null {
   if (!color || color === "default") return null;
   return color.replace("_background", "");
@@ -315,7 +327,7 @@ export async function getPostFromNotion(pageId: string): Promise<Post | null> {
       author: properties.Author?.people[0]?.name,
       tags: properties.Tags?.multi_select?.map((tag: any) => tag.name) || [],
       category: properties.Category?.select?.name,
-      locale: properties.Locale?.select?.name || "fr",
+      locale: mapLocaleFromNotion(properties.Locale?.select?.name),
     };
 
     return post;
