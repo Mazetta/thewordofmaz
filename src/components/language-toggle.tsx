@@ -2,19 +2,22 @@
 
 import { useLocale } from '@/lib/locale-context';
 import { Globe } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useTheme } from 'next-themes';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
 import { useRouter, usePathname } from 'next/navigation';
 
 export function LanguageToggle() {
   const { locale, setLocale } = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   const handleLocaleChange = (newLocale: 'fr' | 'en') => {
     setLocale(newLocale);
@@ -39,10 +42,19 @@ export function LanguageToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon">
+        <div
+          className={cn(
+            "flex h-8 w-8 items-center justify-center rounded-md cursor-pointer transition-all border",
+            isDark
+              ? "bg-zinc-950 border-zinc-800 hover:bg-zinc-900"
+              : "bg-white border-zinc-200 hover:bg-zinc-100"
+          )}
+          role="button"
+          tabIndex={0}
+          aria-label="Changer la langue"
+        >
           <Globe className="h-4 w-4" />
-          <span className="sr-only">Changer la langue</span>
-        </Button>
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem 
