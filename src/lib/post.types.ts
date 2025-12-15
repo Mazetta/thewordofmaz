@@ -10,4 +10,5 @@ export interface Post {
   tags?: string[];
   category?: string;
   locale: "fr" | "en";
+  translationId?: string; // ID du post traduit associé
 }

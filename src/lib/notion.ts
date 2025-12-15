@@ -328,6 +328,7 @@ export async function getPostFromNotion(pageId: string): Promise<Post | null> {
       tags: properties.Tags?.multi_select?.map((tag: any) => tag.name) || [],
       category: properties.Category?.select?.name,
       locale: mapLocaleFromNotion(properties.Locale?.select?.name),
+      translationId: properties["Translation ID"]?.rich_text[0]?.plain_text,
     };
 
     return post;
@@ -365,6 +366,42 @@ export async function getPostBySlugAndLocale(slug: string, locale: "fr" | "en"):
     return null;
   } catch (error) {
     console.error("Error getting post by slug and locale:", error);
+    return null;
+  }
+}
+
+export async function getTranslatedPost(currentPost: Post, targetLocale: "fr" | "en"): Promise<Post | null> {
+  try {
+    if (!currentPost.translationId) {
+      return null;
+    }
+
+    const rawPosts = await fetchPublishedPosts();
+    for (const page of rawPosts) {
+      const post = await getPostFromNotion(page.id);
+      if (post?.translationId === currentPost.translationId && post?.locale === targetLocale) {
+        return post;
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error("Error getting translated post:", error);
+    return null;
+  }
+}
+
+export async function getTranslatedPostAction(translationId: string, targetLocale: "fr" | "en"): Promise<{ slug: string } | null> {
+  try {
+    const rawPosts = await fetchPublishedPosts();
+    for (const page of rawPosts) {
+      const post = await getPostFromNotion(page.id);
+      if (post?.translationId === translationId && post?.locale === targetLocale) {
+        return { slug: post.slug };
+      }
+    }
+    return null;
+  } catch (error) {
+    console.error("Error getting translated post:", error);
     return null;
   }
 }
