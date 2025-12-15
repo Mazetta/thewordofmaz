@@ -38,12 +38,18 @@ export function LanguageToggle() {
           setTranslationId(post.translationId);
         }
       });
+    } else {
+      // Remettre translationId à null si on n'est pas sur une page de post
+      console.log(`[LanguageToggle] Not on a post page, resetting translationId`);
+      setTranslationId(null);
     }
   }, [pathname]);
 
   const handleLocaleChange = async (newLocale: 'fr' | 'en') => {
     // Si on clique sur la même langue, ne rien faire
+    console.log(`[LanguageToggle] Clicked on ${newLocale}, current locale: ${locale}`);
     if (newLocale === locale) {
+      console.log(`[LanguageToggle] Same locale, returning`);
       return;
     }
 

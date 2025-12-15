@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 type Locale = 'fr' | 'en';
 
@@ -42,16 +43,29 @@ function detectLocaleFromBrowser(): Locale {
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>('fr');
   const [isMounted, setIsMounted] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const detectedLocale = detectLocaleFromBrowser();
-    setLocaleState(detectedLocale);
-    // Sauvegarder dans localStorage si pas déjà présent
-    if (!localStorage.getItem('locale')) {
-      localStorage.setItem('locale', detectedLocale);
+    // Extraire la locale de l'URL en priorité
+    const segments = pathname.split('/').filter(Boolean);
+    const urlLocale = (segments[0] === 'fr' || segments[0] === 'en') ? segments[0] : null;
+    const postLocale = (segments[0] === 'posts' && (segments[1] === 'fr' || segments[1] === 'en')) ? segments[1] : null;
+    
+    console.log(`[LocaleContext] pathname: ${pathname}, urlLocale: ${urlLocale}, postLocale: ${postLocale}`);
+    
+    if (urlLocale || postLocale) {
+      const newLocale = (urlLocale || postLocale) as Locale;
+      console.log(`[LocaleContext] Setting locale to ${newLocale} from URL`);
+      setLocaleState(newLocale);
+      localStorage.setItem('locale', newLocale);
+    } else {
+      // Si pas de locale dans l'URL, utiliser le navigateur
+      const detectedLocale = detectLocaleFromBrowser();
+      console.log(`[LocaleContext] No locale in URL, detected from browser: ${detectedLocale}`);
+      setLocaleState(detectedLocale);
     }
     setIsMounted(true);
-  }, []);
+  }, [pathname]);
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
