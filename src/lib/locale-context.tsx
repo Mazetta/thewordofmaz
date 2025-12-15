@@ -11,16 +11,46 @@ interface LocaleContextType {
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
+function detectLocaleFromBrowser(): Locale {
+  // Vérifier localStorage d'abord
+  const savedLocale = localStorage.getItem('locale') as Locale | null;
+  if (savedLocale) {
+    return savedLocale;
+  }
+
+  // Détecter à partir du navigateur
+  if (typeof navigator === 'undefined') {
+    return 'fr'; // Fallback côté serveur
+  }
+
+  const browserLocale = navigator.language || navigator.languages?.[0] || 'fr';
+  
+  // Supporter les variantes: en-US, en-GB, en-*, etc.
+  if (browserLocale.startsWith('en')) {
+    return 'en';
+  }
+  
+  // Supporter les variantes: fr-FR, fr-CA, fr-*, etc.
+  if (browserLocale.startsWith('fr')) {
+    return 'fr';
+  }
+  
+  // Fallback par défaut
+  return 'fr';
+}
+
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>('fr');
-  const [mounted, setMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Récupérer la locale depuis localStorage
-    const savedLocale = localStorage.getItem('locale') as Locale | null;
-    const browserLocale = navigator.language.startsWith('en') ? 'en' : 'fr';
-    setLocaleState(savedLocale || browserLocale);
-    setMounted(true);
+    const detectedLocale = detectLocaleFromBrowser();
+    setLocaleState(detectedLocale);
+    // Sauvegarder dans localStorage si pas déjà présent
+    if (!localStorage.getItem('locale')) {
+      localStorage.setItem('locale', detectedLocale);
+    }
+    setIsMounted(true);
   }, []);
 
   const setLocale = (newLocale: Locale) => {
@@ -30,7 +60,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <LocaleContext.Provider value={{ locale, setLocale }}>
-      {mounted ? children : null}
+      {children}
     </LocaleContext.Provider>
   );
 }
