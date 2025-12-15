@@ -2,7 +2,11 @@
 
 import Giscus from "@giscus/react";
 
-export default function GiscusComments() {
+interface GiscusCommentsProps {
+  locale?: 'fr' | 'en';
+}
+
+export default function GiscusComments({ locale = 'fr' }: GiscusCommentsProps) {
   return (
     <Giscus
       repo="Mazetta/thewordofmaz"
@@ -14,7 +18,7 @@ export default function GiscusComments() {
       emitMetadata="0"
       inputPosition="top"
       theme="transparent_dark"
-      lang="fr"
+      lang={locale}
       loading="lazy"
     />
   );

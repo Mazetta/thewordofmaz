@@ -331,6 +331,11 @@ export async function getPostFromNotion(pageId: string): Promise<Post | null> {
       translationId: properties["Translation ID"]?.rich_text[0]?.plain_text,
     };
 
+    // Debug logging
+    if (properties["Translation ID"]) {
+      console.log(`[Post: ${rawTitle}] Translation ID found:`, post.translationId);
+    }
+
     return post;
   } catch (error) {
     console.error("Error getting post from Notion:", error);
@@ -392,13 +397,17 @@ export async function getTranslatedPost(currentPost: Post, targetLocale: "fr" | 
 
 export async function getTranslatedPostAction(translationId: string, targetLocale: "fr" | "en"): Promise<{ slug: string } | null> {
   try {
+    console.log(`[Translation] Looking for translationId: ${translationId}, targetLocale: ${targetLocale}`);
     const rawPosts = await fetchPublishedPosts();
     for (const page of rawPosts) {
       const post = await getPostFromNotion(page.id);
+      console.log(`[Translation] Checking post: ${post?.title}, translationId: ${post?.translationId}, locale: ${post?.locale}`);
       if (post?.translationId === translationId && post?.locale === targetLocale) {
+        console.log(`[Translation] Found match! Slug: ${post.slug}`);
         return { slug: post.slug };
       }
     }
+    console.log(`[Translation] No match found for translationId: ${translationId}`);
     return null;
   } catch (error) {
     console.error("Error getting translated post:", error);

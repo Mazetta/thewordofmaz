@@ -30,8 +30,11 @@ export function LanguageToggle() {
       const slug = segments[2];
       const currentLocale = segments[1] as 'fr' | 'en';
       
+      console.log(`[LanguageToggle] Fetching post: ${slug}, locale: ${currentLocale}`);
       fetchCurrentPost(slug, currentLocale).then(post => {
+        console.log(`[LanguageToggle] Got post:`, post);
         if (post?.translationId) {
+          console.log(`[LanguageToggle] Setting translationId: ${post.translationId}`);
           setTranslationId(post.translationId);
         }
       });
@@ -45,12 +48,17 @@ export function LanguageToggle() {
     try {
       // Si on est sur un post et qu'on a une traduction disponible
       if (translationId) {
+        console.log(`[LanguageToggle] Fetching translation for ID: ${translationId}, locale: ${newLocale}`);
         const translatedPost = await fetchTranslatedPost(translationId, newLocale);
+        console.log(`[LanguageToggle] Translation result:`, translatedPost);
         if (translatedPost) {
+          console.log(`[LanguageToggle] Navigating to /posts/${newLocale}/${translatedPost.slug}`);
           router.push(`/posts/${newLocale}/${translatedPost.slug}`);
           setIsLoading(false);
           return;
         }
+      } else {
+        console.log(`[LanguageToggle] No translationId found, using fallback`);
       }
 
       // Fallback: construire le nouveau chemin avec la nouvelle locale

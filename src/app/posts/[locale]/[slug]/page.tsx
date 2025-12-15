@@ -184,10 +184,11 @@ export default async function PostPage({ params }: PostPageProps) {
 
         <NavButtons 
           currentSlug={post.slug} 
-          allPosts={allPosts.filter(p => p.locale === locale).map(p => ({ slug: p.slug, title: p.title }))} 
+          allPosts={allPosts.filter(p => p.locale === locale).map(p => ({ slug: p.slug, title: p.title }))}
+          locale={locale}
         />
 
-        <GiscusComments/>
+        <GiscusComments locale={locale} />
 
       </article>
     </>

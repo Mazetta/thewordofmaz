@@ -22,6 +22,8 @@ export const translations = {
     by: "Par",
     word: (count: number) => count === 1 ? "mot" : "mots",
     readingTime: "min de lecture",
+    previousPost: "Post Précédent",
+    nextPost: "Post Suivant",
     
     // Language & Theme
     changeLanguage: "Changer la langue",
@@ -59,6 +61,8 @@ export const translations = {
     by: "By",
     word: (count: number) => count === 1 ? "word" : "words",
     readingTime: "min read",
+    previousPost: "Previous Post",
+    nextPost: "Next Post",
     
     // Language & Theme
     changeLanguage: "Change language",
