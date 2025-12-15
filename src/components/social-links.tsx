@@ -3,8 +3,11 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faXTwitter, faBluesky, faReddit, faYoutube } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope, faRss } from "@fortawesome/free-solid-svg-icons";
+import { useTranslations } from "@/lib/use-translations";
 
 export function SocialLinks() {
+  const { t } = useTranslations();
+
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="flex justify-center gap-6">
@@ -31,7 +34,7 @@ export function SocialLinks() {
         </a>
       </div>
       <p className="text-muted-foreground text-sm">
-        © {new Date().getFullYear()} Mazeriio. Tous droits réservés.
+        © {new Date().getFullYear()} Mazeriio. {t('footer')}
       </p>
     </div>
   );

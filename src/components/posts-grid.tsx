@@ -4,6 +4,7 @@ import PostCard from "@/components/post-card";
 import { Post } from "@/lib/post.types";
 import { useLocale } from "@/lib/locale-context";
 import { useTranslations } from "@/lib/use-translations";
+import { useSearchParams } from "next/navigation";
 
 interface PostsGridProps {
   posts: Post[];
@@ -12,8 +13,18 @@ interface PostsGridProps {
 export function PostsGrid({ posts }: PostsGridProps) {
   const { locale } = useLocale();
   const { t } = useTranslations();
+  const searchParams = useSearchParams();
   
-  const filteredPosts = posts.filter(post => post.locale === locale);
+  const sort = searchParams.get("sort") || "newest";
+  
+  let filteredPosts = posts.filter(post => post.locale === locale);
+  
+  // Sort posts
+  filteredPosts.sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+    return sort === "newest" ? dateB - dateA : dateA - dateB;
+  });
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

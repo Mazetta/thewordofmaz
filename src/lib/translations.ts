@@ -15,6 +15,8 @@ export const translations = {
     
     // Home page
     noPostsFound: "Aucun article trouvé",
+    sortNewest: "Plus récent",
+    sortOldest: "Plus ancien",
     
     // Post page
     by: "Par",
@@ -26,6 +28,9 @@ export const translations = {
     
     // Loading
     loading: "Chargement...",
+
+    //Footer
+    footer: "Tous droits réservés.",
     
     // Errors
     error404: "Erreur 404, Post Introuvable",
@@ -47,6 +52,8 @@ export const translations = {
     
     // Home page
     noPostsFound: "No posts found",
+    sortNewest: "Newest",
+    sortOldest: "Oldest",
     
     // Post page
     by: "By",
@@ -58,6 +65,9 @@ export const translations = {
     
     // Loading
     loading: "Loading...",
+
+    //Footer
+    footer: "All rights reserved.",
     
     // Errors
     error404: "Error 404, Post Not Found",
