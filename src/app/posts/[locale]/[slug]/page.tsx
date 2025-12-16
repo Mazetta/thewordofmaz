@@ -6,7 +6,7 @@ import { Metadata } from "next";
 import ReactMarkdown from "react-markdown";
 import { ResolvingMetadata } from "next";
 import { Badge } from "@/components/ui/badge";
-import { calculateReadingTime } from "@/lib/utils";
+import { calculateReadingTime, stripHtmlTags } from "@/lib/utils";
 import { components } from "@/components/mdx-component";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -43,16 +43,17 @@ export async function generateMetadata(
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.mazeriio.net/";
+  const cleanDescription = stripHtmlTags(post.description);
 
   return {
     title: post.title,
-    description: post.description,
+    description: cleanDescription,
     alternates: {
       canonical: `${siteUrl}/posts/${locale}/${post.slug}`,
     },
     openGraph: {
       title: post.title,
-      description: post.description,
+      description: cleanDescription,
       type: "article",
       url: `${siteUrl}/posts/${locale}/${post.slug}`,
       publishedTime: new Date(post.date).toISOString(),
@@ -70,7 +71,7 @@ export async function generateMetadata(
     twitter: {
       card: "summary_large_image",
       title: post.title,
-      description: post.description,
+      description: cleanDescription,
       images: [
         {
           url: post.coverImage || `${siteUrl}/mushroom-128.png`,

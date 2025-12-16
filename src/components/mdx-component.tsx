@@ -84,19 +84,26 @@ const components = {
     return <pre className={cn("bg-transparent p-0", className)} {...props} />;
   },
   img: ({ src, alt }: { src?: string | Blob; alt?: string }) => {
-    const imageUrl = src
-      ? typeof src === "string"
-        ? src
-        : URL.createObjectURL(src)
-      : "";
+    if (!src) return null;
+    
+    const imageUrl = typeof src === "string" ? src : URL.createObjectURL(src);
+    
     return (
-      <Image
-        src={imageUrl}
-        alt={alt || ""}
-        className="mb-4 h-auto w-full rounded-md"
-        width={1000}
-        height={1000}
-      />
+      <div className="relative w-full mb-4">
+        <Image
+          src={imageUrl}
+          alt={alt || "Image du post"}
+          className="rounded-md w-full h-auto"
+          width={800}
+          height={600}
+          priority={false}
+          onError={(e) => {
+            // Fallback si l'image ne charge pas (token Notion expiré)
+            const img = e.target as HTMLImageElement;
+            img.style.display = 'none';
+          }}
+        />
+      </div>
     );
   },
   h2: ({ children }: { children?: React.ReactNode }) => (

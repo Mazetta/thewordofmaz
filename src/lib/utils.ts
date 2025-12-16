@@ -21,3 +21,16 @@ export function getWordCount(content: string): number {
     .trim();
   return cleanText.split(" ").length;
 }
+
+export function stripHtmlTags(html: string): string {
+  if (!html) return "";
+  // Remove all HTML tags but preserve the text content
+  return html
+    .replace(/<[^>]*>/g, "") // Remove HTML tags
+    .replace(/&nbsp;/g, " ") // Replace HTML entities
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ") // Collapse multiple spaces
+    .trim();
+}

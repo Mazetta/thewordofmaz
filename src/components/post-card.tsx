@@ -69,7 +69,10 @@ export default function PostCard({ post, locale = "fr" }: PostCardProps) {
           </h2>
           <ArrowUpRight className="absolute top-[7.5rem] right-6 h-6 w-6 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-primary" />
         </div>
-        <p className="text-muted-foreground line-clamp-2">{post.description}</p>
+        <div 
+          className="text-muted-foreground line-clamp-2 text-sm"
+          dangerouslySetInnerHTML={{ __html: post.description }}
+        />
       </CardHeader>
       <CardContent>
         {post.author && (
