@@ -31,6 +31,8 @@ export function stripHtmlTags(html: string): string {
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&amp;/g, "&")
+    .replace(/^#+\s+/, "") // Remove markdown headings at the start
+    .replace(/^\s*[-*_>]+\s*/, "") // Remove markdown symbols at the start
     .replace(/\s+/g, " ") // Collapse multiple spaces
     .trim();
 }

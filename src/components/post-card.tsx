@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { fr, enUS } from "date-fns/locale";
 import { Post } from "@/lib/post.types";
 import { Badge } from "@/components/ui/badge";
-import { calculateReadingTime, getWordCount } from "@/lib/utils";
+import { calculateReadingTime, getWordCount, stripHtmlTags } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -71,7 +71,7 @@ export default function PostCard({ post, locale = "fr" }: PostCardProps) {
         </div>
         <div 
           className="text-muted-foreground line-clamp-2 text-sm"
-          dangerouslySetInnerHTML={{ __html: post.description }}
+          dangerouslySetInnerHTML={{ __html: stripHtmlTags(post.description) }}
         />
       </CardHeader>
       <CardContent>
