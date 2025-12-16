@@ -56,15 +56,17 @@ export async function generateMetadata(
       description: cleanDescription,
       type: "article",
       url: `${siteUrl}/posts/${locale}/${post.slug}`,
+      siteName: "The Word of Maz",
       publishedTime: new Date(post.date).toISOString(),
       authors: post.author ? [post.author] : [],
       tags: post.tags,
       images: [
         {
           url: post.coverImage || `${siteUrl}/mushroom-128.png`,
-          width: 1200,
-          height: 630,
-          alt: post.title,
+          ...(post.coverImage
+            ? { width: 1200, height: 630 }
+            : { width: 128, height: 128 }),
+          alt: post.coverImage ? post.title : "The Word of Maz",
         },
       ],
     },
@@ -75,7 +77,7 @@ export async function generateMetadata(
       images: [
         {
           url: post.coverImage || `${siteUrl}/mushroom-128.png`,
-          alt: post.title,
+          alt: post.coverImage ? post.title : "The Word of Maz",
         },
       ],
     },
