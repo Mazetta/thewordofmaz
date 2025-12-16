@@ -56,7 +56,7 @@ export async function generateMetadata(
       description: cleanDescription,
       type: "article",
       url: `${siteUrl}/posts/${locale}/${post.slug}`,
-      siteName: "The Word of Maz",
+      siteName: "mazeriio.net",
       publishedTime: new Date(post.date).toISOString(),
       authors: post.author ? [post.author] : [],
       tags: post.tags,
@@ -64,7 +64,7 @@ export async function generateMetadata(
         {
           url: post.coverImage || `${siteUrl}/mushroom-128.png`,
           ...(post.coverImage
-            ? { width: 1200, height: 630 }
+            ? {}
             : { width: 128, height: 128 }),
           alt: post.coverImage ? post.title : "The Word of Maz",
         },
