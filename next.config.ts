@@ -16,7 +16,9 @@ const nextConfig: NextConfig = {
         hostname: "s3.us-west-2.amazonaws.com",
       },
     ],
-    unoptimized: true, // ⚠️ important pour les images Notion avec jetons temporaires
+    formats: ["image/avif", "image/webp"], // Formats modernes pour meilleure compression
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 };
 
